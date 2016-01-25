@@ -36,7 +36,7 @@ public class Server {
 			
 			Socket client = this.socket.accept();
 			//TODO add args to client thread
-			this.threadPool.execute(new ClientThread());
+			this.threadPool.execute(new ClientThread(client));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
