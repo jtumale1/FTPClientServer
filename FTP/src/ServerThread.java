@@ -33,6 +33,10 @@ public class ServerThread implements Runnable {
 		
 	}
 	
+	public void pwd(){
+		System.out.println(System.getProperty("user.dir"));
+		
+	}
 	
 	public void ls(){
 		File curDir = new File(".");
