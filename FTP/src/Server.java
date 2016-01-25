@@ -27,8 +27,7 @@ public class Server {
 		try {
 			this.socket = new ServerSocket(
 					this.port, 
-					this.BACKLOG, 
-					InetAddress.getLocalHost()
+					this.BACKLOG
 					);
 			//bind port
 			this.socket.bind(new InetSocketAddress(this.address, this.port));
@@ -46,7 +45,8 @@ public class Server {
 			e.printStackTrace();
 		}
 		finally{
-			this.socket.close();
+			if (this.socket != null)
+				this.socket.close();
 		}
 		
 	}
