@@ -10,17 +10,16 @@ public class Server {
 	private int port;
 	private String address = "localhost";
 	private ServerSocket socket;
+	private volatile Boolean active = true;
 	
 	
 	public Server(String address, int port){
 		this.address = address;
 		this.port = port;
-		this.run();
 	}
 	
 	public Server(int port){
 		this.port = port;
-		this.run();
 	}
 	
 	public void run(){
@@ -34,12 +33,20 @@ public class Server {
 			//bind port
 			this.socket.bind(new InetSocketAddress(this.address, this.port));
 			
-			Socket client = this.socket.accept();
-			//TODO add args to client thread
-			this.threadPool.execute(new ClientThread(client));
+			do{
+				Socket client = this.socket.accept();
+			
+				this.threadPool.execute(new ClientThread(client, this.active));
+			
+			}while(active);
+			
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		finally{
+			this.socket.close();
 		}
 		
 	}
