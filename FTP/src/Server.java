@@ -40,9 +40,14 @@ public class Server {
 			}while(active);
 			
 			
-		} catch (IOException e) {
+		} 
+		
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		catch(IllegalArgumentException iae){
+			iae.printStackTrace();
 		}
 		finally{
 			if (this.socket != null)
