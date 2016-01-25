@@ -53,7 +53,10 @@ public class Server {
 
 	
 	public static void main(String[] args) {
-		
+		for(String s: args){
+			System.out.println(s);
+		}
+		//Server myFtpServer = new Server(args[1]);
 	}
 
 }
