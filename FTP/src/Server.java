@@ -22,7 +22,7 @@ public class Server {
 		this.port = port;
 	}
 	
-	public void run(){
+	public void run() throws IOException{
 		//create a socket
 		try {
 			this.socket = new ServerSocket(
@@ -36,7 +36,7 @@ public class Server {
 			do{
 				Socket client = this.socket.accept();
 			
-				this.threadPool.execute(new ClientThread(client, this.active));
+				this.threadPool.execute(new ServerThread(client, this.active));
 			
 			}while(active);
 			
