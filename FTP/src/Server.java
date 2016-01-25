@@ -57,11 +57,12 @@ public class Server {
 	}
 
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		for(String s: args){
 			System.out.println(s);
 		}
-		//Server myFtpServer = new Server(args[1]);
+		Server myFtpServer = new Server("localhost", 80000);
+		myFtpServer.run();
 	}
 
 }
