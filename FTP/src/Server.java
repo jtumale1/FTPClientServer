@@ -9,7 +9,7 @@ public class Server {
 	private final int BACKLOG = 20;
 	private int port;
 	private String address = "localhost";
-	private ServerSocket socket;
+	private ServerSocket serverSock;
 	private volatile Boolean active = true;
 	
 	
@@ -25,8 +25,16 @@ public class Server {
 	public void run() throws IOException{
 		//create a socket
 		try {
-			this.socket = new ServerSocket(this.port);
+			this.serverSock = new ServerSocket(this.port);
 			
+			while (true){
+				Socket sock = this.serverSock.accept();
+				ServerThread serverThread_ = new ServerThread(sock, this.active);
+				Thread thread_ = new Thread(serverThread_);
+				
+				thread_.start();
+			}
+	
 //Remove thread pool for now
 //			this.socket = new ServerSocket(
 //					this.port
@@ -40,21 +48,20 @@ public class Server {
 //				this.threadPool.execute(new ServerThread(client, this.active));
 //			
 //			}while(active);
-//			
-			
+//					
 		} 
 		
-		catch (IOException e) {
+		catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch(IllegalArgumentException iae){
-			iae.printStackTrace();
-		}
-		finally{
-			if (this.socket != null)
-				this.socket.close();
-		}
+//		catch(IllegalArgumentException iae){
+//			iae.printStackTrace();
+//		}
+//		finally{
+//			if (this.socket != null)
+//				this.socket.close();
+//		}
 		
 	}
 
@@ -63,7 +70,7 @@ public class Server {
 		for(String s: args){
 			System.out.println(s);
 		}
-		Server myFtpServer = new Server("localhost", 2024);
+		Server myFtpServer = new Server("localhost", 9000);
 		myFtpServer.run();
 		System.out.println("Server is running");
 	}

@@ -9,7 +9,8 @@ import java.nio.file.attribute.FileAttribute;
 public class ServerThread implements Runnable {
 	
 	Socket SOCK;
-	Boolean active;
+	volatile Boolean active;
+
 	
 	public ServerThread(Socket SOCK, Boolean active){
 		this.SOCK = SOCK;
@@ -18,6 +19,8 @@ public class ServerThread implements Runnable {
 	
 	@Override
 	public void run(){
+		
+		System.out.println("Running thread!");
 		
 		try {
 			mkdir(".");
@@ -62,9 +65,9 @@ public class ServerThread implements Runnable {
 	}
 	
 	public void mkdir(String path) throws IOException{
-		File directory = new File("New folder");
-		Path p1 = Paths.get(path);
-		Files.createDirectory(p1);
+//		File directory = new File("New folder");
+//		Path p1 = Paths.get(path);
+//		Files.createDirectory(p1);
 	}
 	
 	public void delete(String filename){
