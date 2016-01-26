@@ -6,11 +6,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
 
+
 public class ServerThread implements Runnable {
 	
-	Socket SOCK;
-	volatile Boolean active;
-
+	private Socket SOCK;
+	private volatile Boolean active;
+	private Scanner scanner;
 	
 	public ServerThread(Socket SOCK, Boolean active){
 		this.SOCK = SOCK;
@@ -20,32 +21,46 @@ public class ServerThread implements Runnable {
 	@Override
 	public void run(){
 		//do tasks until no more, then let thread die
-		/*System.out.println("Running thread!");
+		System.out.println("Running thread!");
 		
 		try {
-			mkdir(".");
-			ls();
+		
+			scanner = new Scanner(this.SOCK.getInputStream());
+			String command = "";
+			while(true){
+				command = scanner.nextLine();
+				if(command.equalsIgnoreCase("quit")) break;
+				this.parse(command);
+			}
+				
+			
+				
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}*/
-		System.out.println("running");
-		try {
-			//simulate action for 5 seconds
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		System.out.println("work processed, Killing thread");
-		
-	}
-
-	public void cd(){
 		
 	}
 	
-	public void pwd(){
+	private void parse(String cmd){
+		switch(cmd){
+			//todo
+			case "ls":
+				break;
+			default:
+				//TODO print error message
+				
+			
+			
+		}
+	}
+
+	private void cd(){
+		
+	}
+	
+	private void pwd(){
 		System.out.println(System.getProperty("user.dir"));
 		
 	}
