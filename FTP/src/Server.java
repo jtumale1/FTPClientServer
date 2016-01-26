@@ -9,7 +9,7 @@ public class Server {
 	private final int BACKLOG = 20;
 	private int port;
 	private String address = "localhost";
-	private ServerSocket serverSock;
+	private ServerSocket serverSocket = null;
 	private volatile Boolean active = true;
 	
 	
@@ -22,57 +22,52 @@ public class Server {
 		this.port = port;
 	}
 	
-	public void run() throws IOException{
+	public void run(){
+		System.out.println("Server is running");
 		//create a socket
 		try {
-			this.serverSock = new ServerSocket(this.port);
 			
-			while (true){
-				Socket sock = this.serverSock.accept();
-				ServerThread serverThread_ = new ServerThread(sock, this.active);
-				Thread thread_ = new Thread(serverThread_);
-				
-				thread_.start();
-			}
-	
-//Remove thread pool for now
-//			this.socket = new ServerSocket(
-//					this.port
-//					);
-//			//bind port
-//			this.socket.bind(new InetSocketAddress(this.address, this.port));
-//			
-//			do{
-//				Socket client = this.socket.accept();
-//			
-//				this.threadPool.execute(new ServerThread(client, this.active));
-//			
-//			}while(active);
-//					
+			this.serverSocket = new ServerSocket(
+					this.port,
+					this.BACKLOG
+					);
+			
+			do{
+				Socket clientSocket = this.serverSocket.accept();
+				ServerThread serverThread = new ServerThread(clientSocket, this.active);
+				this.threadPool.execute(serverThread);
+				clientSocket.close();
+			}while(active);
+					
 		} 
 		
-		catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		catch (IOException e) {
+ 			// TODO Auto-generated catch block
+ 			e.printStackTrace();
 		}
-//		catch(IllegalArgumentException iae){
-//			iae.printStackTrace();
-//		}
-//		finally{
-//			if (this.socket != null)
-//				this.socket.close();
-//		}
+		catch(IllegalArgumentException iae){
+			iae.printStackTrace();
+		}
+		finally{
+			// have check here that other threads arent running
+			if (this.serverSocket != null)
+				try {
+					this.serverSocket.close();
+				} 
+				catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
 		
 	}
 
 	
-	public static void main(String[] args) throws IOException {
-		for(String s: args){
-			System.out.println(s);
-		}
+	public static void main(String[] args){
+		//TODO parse args for port number
 		Server myFtpServer = new Server("localhost", 9000);
 		myFtpServer.run();
-		System.out.println("Server is running");
+		
 	}
 
 }

@@ -19,8 +19,8 @@ public class ServerThread implements Runnable {
 	
 	@Override
 	public void run(){
-		
-		System.out.println("Running thread!");
+		//do tasks until no more, then let thread die
+		/*System.out.println("Running thread!");
 		
 		try {
 			mkdir(".");
@@ -28,7 +28,16 @@ public class ServerThread implements Runnable {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}*/
+		System.out.println("running");
+		try {
+			//simulate action for 5 seconds
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		System.out.println("work processed, Killing thread");
 		
 	}
 
