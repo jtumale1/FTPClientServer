@@ -25,20 +25,22 @@ public class Server {
 	public void run() throws IOException{
 		//create a socket
 		try {
-			this.socket = new ServerSocket(
-					this.port, 
-					this.BACKLOG
-					);
-			//bind port
-			this.socket.bind(new InetSocketAddress(this.address, this.port));
+			this.socket = new ServerSocket(this.port);
 			
-			do{
-				Socket client = this.socket.accept();
-			
-				this.threadPool.execute(new ServerThread(client, this.active));
-			
-			}while(active);
-			
+//Remove thread pool for now
+//			this.socket = new ServerSocket(
+//					this.port
+//					);
+//			//bind port
+//			this.socket.bind(new InetSocketAddress(this.address, this.port));
+//			
+//			do{
+//				Socket client = this.socket.accept();
+//			
+//				this.threadPool.execute(new ServerThread(client, this.active));
+//			
+//			}while(active);
+//			
 			
 		} 
 		
@@ -61,8 +63,9 @@ public class Server {
 		for(String s: args){
 			System.out.println(s);
 		}
-		Server myFtpServer = new Server("localhost", 80000);
+		Server myFtpServer = new Server("localhost", 2024);
 		myFtpServer.run();
+		System.out.println("Server is running");
 	}
 
 }
