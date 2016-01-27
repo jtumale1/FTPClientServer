@@ -36,7 +36,7 @@ public class Server {
 				Socket clientSocket = this.serverSocket.accept();
 				ServerThread serverThread = new ServerThread(clientSocket, this.active);
 				this.threadPool.execute(serverThread);
-				clientSocket.close();
+				clientSocket.close();// this may not be needed here
 			}while(active);
 					
 		} 
