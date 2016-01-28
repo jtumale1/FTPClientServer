@@ -30,13 +30,12 @@ public class Server {
 			this.serverSocket = new ServerSocket(
 					this.port,
 					this.BACKLOG
-					);
+			);
 			
 			do{
 				Socket clientSocket = this.serverSocket.accept();
-				ServerThread serverThread = new ServerThread(clientSocket, this.active);
+				ServerThread serverThread = new ServerThread(clientSocket, this.serverSocket, this.active);
 				this.threadPool.execute(serverThread);
-				clientSocket.close();// this may not be needed here
 			}while(active);
 					
 		} 

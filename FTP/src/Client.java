@@ -25,7 +25,7 @@ public class Client {
 	}
 	
 	
-	public void run() throws UnknownHostException, IOException{
+	public void run() throws UnknownHostException, IOException, InterruptedException{
 		//create socket
 		this.clientSocket = new Socket(this.hostName, this.connectPort);
 		
@@ -40,9 +40,11 @@ public class Client {
 				
 			}
 			else{
-				//TODO use threadpool
 				ClientThread clientThread = new ClientThread(this.clientSocket, input);
 				this.threadPool.execute(clientThread);
+				
+				//this forces our client to be synchronous for now, program blocks until thread dies
+				clientThread.join();
 			}
 			
 		}
@@ -53,9 +55,9 @@ public class Client {
 	public static void main(String[] args){
 		
 		try{
-		Client client = new Client("localhost", 9000);
-		System.out.println("Running client!");
-		client.run();
+			Client client = new Client("localhost", 9000);
+			System.out.println("Running client!");
+			client.run();
 		}catch(Exception ex){
 			System.out.println(ex.getStackTrace());
 		}
