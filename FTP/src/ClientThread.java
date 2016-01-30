@@ -33,10 +33,16 @@ public class ClientThread extends Thread {
 			BufferedReader in = new BufferedReader(
 					new InputStreamReader(this.SOCK.getInputStream())
 				);
-			//Print the response
-			//TODO: the response is printing twice?
-			String INPUT = in.readLine();
-			System.out.println(INPUT);
+//			Print the response
+//			TODO: the response is printing twice?
+			StringBuffer buffer = new StringBuffer("");
+			String INPUT = null;
+			while ( (INPUT = in.readLine()) != null){
+				System.out.println(INPUT);
+			}
+			in.close();
+
+		
 			
 		} 
 		catch (IOException e) {
