@@ -175,16 +175,17 @@ public class ServerThread implements Runnable {
 	}
 	
 	private String delete(String filename){
-		StringBuffer output = new StringBuffer();
-		File curDir = new File(".");
-		File[] filesList = curDir.listFiles();
-	     for(File f : filesList){
-	    
-	            if(f.isFile()){
-	            	output.append(f.getName());
- 	            }
-	     }
-	     return output.toString();
+		String status = "";
+		//Makes file object to check if it exists
+		File file = new File(filename);
+		if(file.exists()){
+			file.delete();
+			status = "Directory Deleted!\n";
+		}
+		else if(!file.exists()){
+			status =  "Directory not deleted. File does not exist!\n";
+		}
+		return status;
 		
 	}
 	
