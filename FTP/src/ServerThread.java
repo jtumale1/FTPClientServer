@@ -136,8 +136,7 @@ public class ServerThread implements Runnable {
 		return currentDirectory;
 				
 	}
-	//The last method worked, I just realized. On the console though, the newline is getting cut off by the 
-	//'ftpclient>' prompt. Need to fix.
+	
 	private String ls(){
 		StringBuffer output = new StringBuffer();
 		File currentDirectory = new File(System.getProperty("user.dir"));
@@ -146,18 +145,6 @@ public class ServerThread implements Runnable {
 			output.append(file + "\n");
 		}
 		return output.toString();
-	}
-	
-	private String ls(String path){
-		StringBuffer output = new StringBuffer();
-		File curDir = new File(path);
-		File[] filesList = curDir.listFiles();
-	     for(File f : filesList){
-	            if(f.isFile()){
-	            	output.append(f.getName() + "\n");
-	            }
-	     }
-	     return output.toString(); 
 	}
 	
 	private String mkdir(String dirName) {
