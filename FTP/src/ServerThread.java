@@ -124,7 +124,7 @@ public class ServerThread implements Runnable {
 			System.setProperty("user.dir", dir.getAbsolutePath());
 			}
 		else{
-			System.out.println(newPath + " is not a directory.");
+			return newPath + " is not a directory.\n";
 		}
 		return dir.getAbsolutePath();
 	}
