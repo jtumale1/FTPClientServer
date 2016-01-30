@@ -32,7 +32,7 @@ public class Client {
 		//read commands from sys.in
 		String input = null;
 		while(true){
-			System.out.print("ftpclient> ");
+			System.out.print("ftpclient> ");	
 			input = this.scanner.nextLine();
 			if(input.equalsIgnoreCase("quit")){
 				//close connection 
@@ -45,6 +45,7 @@ public class Client {
 				
 				//this forces our client to be synchronous for now, program blocks until thread dies
 				clientThread.join();
+				
 			}
 			
 		}

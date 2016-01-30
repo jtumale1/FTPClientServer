@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileAttribute;
+import java.util.Scanner;
 
 
 
@@ -37,10 +38,9 @@ public class ServerThread implements Runnable {
 			//out is the message buffer to return to the client
 			PrintWriter out = new PrintWriter(this.clientSocket.getOutputStream(), true);
 			//in is the incoming message buffer from the client to be read by the server
-			BufferedReader in = new BufferedReader(
+			BufferedReader in = new BufferedReader( 
 					new InputStreamReader(this.clientSocket.getInputStream())
-				);
-			
+					);
 			String command = "", response = "";
 			
 			while((command = in.readLine()) != null){
@@ -145,13 +145,11 @@ public class ServerThread implements Runnable {
 		File curDir = new File(path);
 		File[] filesList = curDir.listFiles();
 	     for(File f : filesList){
-	    
 	            if(f.isFile()){
 	            	output.append(f.getName() + "\n");
 	            }
-	        }
-	     return output.toString();
-		
+	     }
+	     return output.toString(); 
 	}
 	
 	private String mkdir(String path) {
