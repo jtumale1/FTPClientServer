@@ -41,7 +41,8 @@ public class ServerThread implements Runnable {
 			BufferedReader in = new BufferedReader( 
 					new InputStreamReader(this.clientSocket.getInputStream())
 					);
-			String command = "", response = "";
+			String command = "";
+			Object response = "";
 			
 			while((command = in.readLine()) != null){
 				if(command.equalsIgnoreCase("quit")) {
@@ -51,7 +52,6 @@ public class ServerThread implements Runnable {
 				//parse client's request
 				response = this.parse(command);
 				//return server's response
-				//response = response.concat("?");
 				out.println(response);
 			}
 			//close reader and writer
@@ -78,7 +78,7 @@ public class ServerThread implements Runnable {
 	 * @param cmd String the command to be parsed.
 	 * @return response String the response to return to the client.
 	 */
-	private String parse(String cmd){
+	private Object parse(String cmd){
 		//break command into an array of each word
 		// e.g. mkdir files -> {"mkdir", "files"}
 		String[] tokens = cmd.split(" ");
@@ -114,9 +114,21 @@ public class ServerThread implements Runnable {
 		return null;
 	}
 
-	private String get(String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+	private File get(String fileName) {
+
+		File curDir = new File(".");
+		File[] filesList = curDir.listFiles();
+		
+	    for(File f : filesList){
+	    	 System.out.println("filename: " + f.getName().trim() + " input: " + fileName.trim());
+	          if (f.getName().toString().trim().equals(fileName.trim())){
+	        	  System.out.println("MATCH");
+	        	  return f; 
+	          }
+	    }
+	    return null;
+	    
+		
 	}
 	
 	private String cd(String newPath){
