@@ -117,11 +117,19 @@ public class ServerThread implements Runnable {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	private String cd(String path){
-		StringBuffer output = new StringBuffer();
-		return output.toString();
+	
+	private String cd(String newPath){
+		File dir = new File(newPath);
+		if(dir.isDirectory() == true){
+			System.setProperty("user.dir", dir.getAbsolutePath());
+			}
+		else{
+			System.out.println(newPath + " is not a directory.");
+		}
+		return dir.getAbsolutePath();
 	}
+	
+	
 	
 	private String pwd(){
 		String currentDirectory = System.getProperty("user.dir");
