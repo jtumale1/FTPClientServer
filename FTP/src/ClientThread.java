@@ -35,13 +35,11 @@ public class ClientThread extends Thread {
 				);
 //			Print the response
 //			TODO: the response is printing twice?
-			StringBuffer buffer = new StringBuffer("");
 			String INPUT = null;
-			while ( (INPUT = in.readLine()) != null){
+			while ( !(INPUT = in.readLine()).equals("?")){
 				System.out.println(INPUT);
-			}
-			in.close();
-
+			}				
+		
 		
 			
 		} 
