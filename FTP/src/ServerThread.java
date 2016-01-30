@@ -160,12 +160,18 @@ public class ServerThread implements Runnable {
 	     return output.toString(); 
 	}
 	
-	private String mkdir(String path) {
-		StringBuffer output = new StringBuffer();
-//		File directory = new File("New folder");
-//		Path p1 = Paths.get(path);
-//		Files.createDirectory(p1);
-		return output.toString();
+	private String mkdir(String dirName) {
+		String directory = "";
+		//Makes file object to check if it exists
+		File file = new File(dirName);
+		if(!file.exists()){
+			file.mkdir();
+			directory = "Directory created!\n";
+		}
+		else if(file.exists()){
+			directory =  "Directory not created. File already exists!\n";
+		}
+		return directory;
 	}
 	
 	private String delete(String filename){
