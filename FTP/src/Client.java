@@ -49,6 +49,8 @@ public class Client {
 			}
 			
 		}
+		
+		this.clientSocket.close();
 	}
 	
 	

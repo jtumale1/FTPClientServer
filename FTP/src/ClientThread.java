@@ -9,14 +9,13 @@ import java.util.Scanner;
 public class ClientThread extends Thread {
 	
 	private Socket SOCK;
-	private PrintWriter out;
 	private String cmd;
-
+	private PrintWriter out;
+	
 	public ClientThread(Socket socket, String cmd){
 		super();
 		this.SOCK = socket;
 		this.cmd = cmd;
-		run();
 	}
 	
 	@Override
@@ -36,10 +35,9 @@ public class ClientThread extends Thread {
 //			Print the response
 //			TODO: the response is printing twice?
 			String INPUT = null;
-			while ( !(INPUT = in.readLine()).equals("?")){
+			while ( (INPUT = in.readLine()) != null){
 				System.out.println(INPUT);
 			}				
-		
 		
 			
 		} 

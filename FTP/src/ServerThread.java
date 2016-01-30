@@ -51,7 +51,7 @@ public class ServerThread implements Runnable {
 				//parse client's request
 				response = this.parse(command);
 				//return server's response
-				response = response.concat("?");
+				//response = response.concat("?");
 				out.println(response);
 			}
 			//close reader and writer
