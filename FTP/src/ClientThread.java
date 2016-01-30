@@ -35,7 +35,6 @@ public class ClientThread extends Thread {
 				);
 			//Print the response
 			//TODO: the response is printing twice?
-			System.out.println("WHY?");
 			String INPUT = in.readLine();
 			System.out.println(INPUT);
 			
