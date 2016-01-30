@@ -124,8 +124,9 @@ public class ServerThread implements Runnable {
 	}
 	
 	private String pwd(){
-		return System.getProperty("user.dir");
-		
+		String currentDirectory = System.getProperty("user.dir");
+		return currentDirectory;
+				
 	}
 	
 	private String ls(){
