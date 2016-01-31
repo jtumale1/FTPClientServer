@@ -1,4 +1,7 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -33,11 +36,37 @@ public class ClientThread extends Thread {
 					new InputStreamReader(this.SOCK.getInputStream())
 				);
 //			Print the response
-//			TODO: the response is printing twice?
 			String INPUT = null;
-			while ( (INPUT = in.readLine()) != null){
-				System.out.println(INPUT);
-			}				
+			Object INPUTobject = null;
+//			while ( (INPUT = in.readLine()) != null){
+//				System.out.println(INPUT);
+//			}			
+			
+			
+			switch(this.cmd){
+			case "ls":
+				while ( (INPUT = in.readLine()) != null){
+					System.out.println(INPUT);
+				}
+			case "mkdir":
+				while ( (INPUT = in.readLine()) != null){
+					System.out.println(INPUT);
+				}
+			case "delete":
+				while ( (INPUT = in.readLine()) != null){
+					System.out.println(INPUT);
+				}
+			case "get":
+			
+			case "put":
+				
+			case "cd":
+				while ( (INPUT = in.readLine()) != null){
+					System.out.println(INPUT);
+				}
+				
+			}
+			
 		
 			
 		} 
