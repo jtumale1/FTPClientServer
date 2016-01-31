@@ -1,7 +1,11 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -50,7 +54,7 @@ public class ServerThread implements Runnable {
 					break;
 				}
 				//parse client's request
-				response = this.parse(command);
+				response = this.parse(command, this.clientSocket.getInputStream());
 				//return server's response
 				out.println(response);
 			}
@@ -78,7 +82,7 @@ public class ServerThread implements Runnable {
 	 * @param cmd String the command to be parsed.
 	 * @return response String the response to return to the client.
 	 */
-	private Object parse(String cmd){
+	private Object parse(String cmd, InputStream in){
 		//break command into an array of each word
 		// e.g. mkdir files -> {"mkdir", "files"}
 		String[] tokens = cmd.split(" ");
@@ -101,7 +105,7 @@ public class ServerThread implements Runnable {
 				case "get":
 					return this.get(tokens[1]);
 				case "put":
-					return this.put(tokens[1]);
+					return this.put(tokens[1], in);
 				case "cd":
 					return this.cd(tokens[1]);
 			}	
@@ -109,9 +113,28 @@ public class ServerThread implements Runnable {
 		return "ERROR MESSAGE HERE";
 	}
 
-	private String put(String fileName) {
-		// TODO Auto-generated method stub
-		return null;
+	private String put(String fileName, InputStream in) {
+		OutputStream newFile = null;
+		try {
+			 newFile = new FileOutputStream(fileName);
+		} 
+		catch (FileNotFoundException e) {
+			return "File: " + fileName + " not found";
+		}
+		
+		byte bytes[] = new byte[16*1024];
+		int count;
+		try{
+	        while ((count = in.read(bytes)) > 0) {
+	            newFile.write(bytes, 0, count);
+	        }
+	        newFile.close();
+		}
+		catch(IOException ioe){
+			return "File can not be written";
+		}
+		
+		return fileName + " successfully copied to server";
 	}
 
 	private File get(String fileName) {
