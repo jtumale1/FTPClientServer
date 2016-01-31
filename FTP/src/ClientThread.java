@@ -56,10 +56,10 @@ public class ClientThread extends Thread {
 			OutputStream fileUploader = this.socket.getOutputStream();
 				
 			int count;
-	        while ((count = fileReader.read(bytes)) > 0) {
-	            fileUploader.write(bytes, 0, count);
-	        }
-	        fileReader.close();
+			while ((count = fileReader.read(bytes)) > 0) {
+			    fileUploader.write(bytes, 0, count);
+			}
+			fileReader.close();
 			fileUploader.close();
 		}
 		//sending string to server
