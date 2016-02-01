@@ -77,7 +77,7 @@ public class ClientThread extends Thread {
 			
 			//Receive the server's response
 			BufferedReader in = new BufferedReader(
-					new InputStreamReader(this.SOCK.getInputStream())
+					new InputStreamReader(this.socket.getInputStream())
 				);
 //			Print the response
 			String INPUT = null;
@@ -114,8 +114,6 @@ public class ClientThread extends Thread {
 		
 			
 		} 
-		catch (IOException e) {
-			e.printStackTrace();		}
 		
 	}
 	
