@@ -25,7 +25,7 @@ public class ClientThread extends Thread {
 	@Override
 	public void run(){
 		try {
-			this.send(this.cmd);
+			this.send();
 			this.receive();
 		}
 		catch(FileNotFoundException fnfe){
@@ -39,8 +39,8 @@ public class ClientThread extends Thread {
 		}
 	}
 	
-	private void send(String cmd) throws FileNotFoundException, IOException, FileSystemException{
-		String[] tokens = cmd.split(" ");
+	private void send() throws FileNotFoundException, IOException, FileSystemException{
+		String[] tokens = this.cmd.split(" ");
 		
 		//sending a file to server
 		if(tokens[0].equals("put") && tokens.length == 2){
@@ -76,15 +76,25 @@ public class ClientThread extends Thread {
 	}
 	
 	private void receive() throws IOException{
-		//Receive the server's response
-		BufferedReader in = new BufferedReader(
-				new InputStreamReader(this.socket.getInputStream())
-			);
-		
-//		Print the response
-		String input = null;
-		while ( (input = in.readLine()) != null){
-			System.out.println(input);
+		//case 1, client issued a get file command and server is currently returning file. We need to receive this incoming byte stream as file
+		if (this.cmd.substring(0, 3).equals("get")){
+			//TODO code to get file goes here
+			
+			//write file to client system
 		}
+		//case 2 client issue another command, server is returning a string. Receive the string
+		else{
+			//Receive the server's response
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(this.socket.getInputStream())
+				);
+			
+//			Print the response
+			String input = null;
+			while ( (input = in.readLine()) != null){
+				System.out.println(input);
+			}
+		}
+		
 	}
 }
