@@ -1,7 +1,4 @@
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,7 +9,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.FileSystemException;
-import java.util.Scanner;
 
 
 public class ClientThread extends Thread {
@@ -87,7 +83,7 @@ public class ClientThread extends Thread {
 //			}			
 			
 			
-			switch(this.cmd){
+			switch(tokens[0]){
 			case "ls":
 				while ( (INPUT = in.readLine()) != null){
 					System.out.println(INPUT);
@@ -100,10 +96,6 @@ public class ClientThread extends Thread {
 				while ( (INPUT = in.readLine()) != null){
 					System.out.println(INPUT);
 				}
-			case "get":
-			
-			case "put":
-				
 			case "cd":
 				while ( (INPUT = in.readLine()) != null){
 					System.out.println(INPUT);
