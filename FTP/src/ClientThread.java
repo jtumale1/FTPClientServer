@@ -71,40 +71,6 @@ public class ClientThread extends Thread {
 			out.println(this.cmd);
 			out.flush();
 			
-			//Receive the server's response
-			BufferedReader in = new BufferedReader(
-					new InputStreamReader(this.socket.getInputStream())
-				);
-//			Print the response
-			String INPUT = null;
-			Object INPUTobject = null;
-//			while ( (INPUT = in.readLine()) != null){
-//				System.out.println(INPUT);
-//			}			
-			
-			
-			switch(tokens[0]){
-			case "ls":
-				while ( (INPUT = in.readLine()) != null){
-					System.out.println(INPUT);
-				}
-			case "mkdir":
-				while ( (INPUT = in.readLine()) != null){
-					System.out.println(INPUT);
-				}
-			case "delete":
-				while ( (INPUT = in.readLine()) != null){
-					System.out.println(INPUT);
-				}
-			case "cd":
-				while ( (INPUT = in.readLine()) != null){
-					System.out.println(INPUT);
-				}
-				
-			}
-			
-		
-			
 		} 
 		
 	}
