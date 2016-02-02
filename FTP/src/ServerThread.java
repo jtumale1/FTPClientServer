@@ -47,8 +47,8 @@ public class ServerThread implements Runnable {
 			BufferedReader in = new BufferedReader( 
 					new InputStreamReader(this.clientSocket.getInputStream())
 					);
-			String command = "";
-			Object response = "";
+			//String command = "";
+			String response = "";
 			
 			while((command = in.readLine()) != null){
 				if(command.equalsIgnoreCase("quit")) {
@@ -84,7 +84,7 @@ public class ServerThread implements Runnable {
 	 * @param cmd String the command to be parsed.
 	 * @return response String the response to return to the client.
 	 */
-	private Object parse(String cmd, InputStream in){
+	private String parse(String cmd, InputStream in){
 		//break command into an array of each word
 		// e.g. mkdir files -> {"mkdir", "files"}
 		String[] tokens = cmd.split(" ");
@@ -145,36 +145,34 @@ public class ServerThread implements Runnable {
 		File[] filesList = curDir.listFiles();
 		
 	    for(File f : filesList){
-	    	 System.out.println("filename: " + f.getName().trim() + " input: " + fileName.trim());
-	    	 
-	    	 	if (f.getName().toString().trim().equals(fileName.trim())){
-	    	 	try{
-	    	 		
-	    	 		File file = new File(fileName);
-	    			if (file.length() > Long.MAX_VALUE){
-	    				throw new FileSystemException("File size too large");
-	    			}
-	    			
-	    			byte bytes[] = new byte[16*1024];
-	    			InputStream fileReader = new FileInputStream(file);
-	    			OutputStream fileUploader = clientSocket.getOutputStream();
-	    				
-	    			int count;
-	    			while ((count = fileReader.read(bytes)) > 0) {
-	    			    fileUploader.write(bytes, 0, count);
-	    			}
-	    			fileReader.close();
-	    			fileUploader.close();
-	    	 	}catch(IOException e){
-	    	 		return "File not exist.";
-	    	 	}
- 		
-	        	  return "Download succesfull."; 
-	          }
+		System.out.println("filename: " + f.getName().trim() + " input: " + fileName.trim());
+	    	
+		if (f.getName().toString().trim().equals(fileName.trim())){
+		    try{
+			
+			File file = new File(fileName);
+			if (file.length() > Long.MAX_VALUE){
+			    throw new FileSystemException("File size too large");
+			}
+	    		
+			byte bytes[] = new byte[16*1024];
+			InputStream fileReader = new FileInputStream(file);
+			OutputStream fileUploader = clientSocket.getOutputStream();
+	    		
+			int count;
+			while ((count = fileReader.read(bytes)) > 0) {
+			    fileUploader.write(bytes, 0, count);
+			}
+			fileReader.close();
+			fileUploader.close();
+		    }catch(IOException e){
+			return "Error reading file";
+		    }
+		    
+		    return "Download succesfull."; 
+		}
 	    }
-	    return null;
-	    
-		
+	    return "File does not exist";   
 	}
 	
 	private String cd(String newPath){
@@ -188,9 +186,7 @@ public class ServerThread implements Runnable {
 		return dir.getAbsolutePath();
 	}
 	
-	
-	
-	private String pwd(){
+   	private String pwd(){
 		String currentDirectory = System.getProperty("user.dir");
 		return currentDirectory;
 				
