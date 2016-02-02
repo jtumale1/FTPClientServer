@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.FileSystemException;
+
 
 
 public class ClientThread extends Thread {
@@ -81,8 +83,8 @@ public class ClientThread extends Thread {
 	    String fileName = tokens[1];
 	    //case 1, client issued a get file command and server is currently returning file. We need to receive this incoming byte stream as file
 	    if (cmd.equals("get")){
-		FileOuputStream fileWriter;
-		InputStream fileDownloader;
+		FileOutputStream fileWriter = null;
+		InputStream fileDownloader = null;
 		try{
 		    //TODO code to get file goes here
 		    fileWriter = new FileOutputStream(fileName);
