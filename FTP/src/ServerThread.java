@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -137,16 +139,37 @@ public class ServerThread implements Runnable {
 		return fileName + " successfully copied to server";
 	}
 
-	private File get(String fileName) {
+	private String get(String fileName) {
 
 		File curDir = new File(".");
 		File[] filesList = curDir.listFiles();
 		
 	    for(File f : filesList){
 	    	 System.out.println("filename: " + f.getName().trim() + " input: " + fileName.trim());
-	          if (f.getName().toString().trim().equals(fileName.trim())){
-	        	  System.out.println("MATCH");
-	        	  return f; 
+	    	 
+	    	 	if (f.getName().toString().trim().equals(fileName.trim())){
+	    	 	try{
+	    	 		
+	    	 		File file = new File(fileName);
+	    			if (file.length() > Long.MAX_VALUE){
+	    				throw new FileSystemException("File size too large");
+	    			}
+	    			
+	    			byte bytes[] = new byte[16*1024];
+	    			InputStream fileReader = new FileInputStream(file);
+	    			OutputStream fileUploader = clientSocket.getOutputStream();
+	    				
+	    			int count;
+	    			while ((count = fileReader.read(bytes)) > 0) {
+	    			    fileUploader.write(bytes, 0, count);
+	    			}
+	    			fileReader.close();
+	    			fileUploader.close();
+	    	 	}catch(IOException e){
+	    	 		return "File not exist.";
+	    	 	}
+ 		
+	        	  return "Download succesfull."; 
 	          }
 	    }
 	    return null;
