@@ -77,7 +77,7 @@ public class ClientThread extends Thread {
 	
 	private void receive() throws IOException{
 		//case 1, client issued a get file command and server is currently returning file. We need to receive this incoming byte stream as file
-		if (this.cmd.substring(0, 3).equals("get")){
+	    if (this.cmd.length() > 2 && this.cmd.substring(0, 3).equals("get")){
 			//TODO code to get file goes here
 			
 			//write file to client system
