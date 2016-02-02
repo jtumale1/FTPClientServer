@@ -47,7 +47,7 @@ public class ServerThread implements Runnable {
 			BufferedReader in = new BufferedReader( 
 					new InputStreamReader(this.clientSocket.getInputStream())
 					);
-			//String command = "";
+			String command = "";
 			String response = "";
 			
 			while((command = in.readLine()) != null){
@@ -56,7 +56,7 @@ public class ServerThread implements Runnable {
 					break;
 				}
 				//parse client's request
-				response = this.parse(command, this.clientSocket.getInputStream());
+				response = this.parse(command);
 				//return server's response
 				out.println(response);
 			}
@@ -84,7 +84,7 @@ public class ServerThread implements Runnable {
 	 * @param cmd String the command to be parsed.
 	 * @return response String the response to return to the client.
 	 */
-	private String parse(String cmd, InputStream in){
+    private String parse(String cmd){
 		//break command into an array of each word
 		// e.g. mkdir files -> {"mkdir", "files"}
 		String[] tokens = cmd.split(" ");
@@ -107,15 +107,16 @@ public class ServerThread implements Runnable {
 				case "get":
 					return this.get(tokens[1]);
 				case "put":
-					return this.put(tokens[1], in);
+					return this.put(tokens[1]);
 				case "cd":
 					return this.cd(tokens[1]);
 			}	
 		}
-		return "ERROR MESSAGE HERE";
+		return "Command not supported.";
 	}
 
-	private String put(String fileName, InputStream in) {
+	private String put(String fileName) {
+	    InputStream in = this.clientSocket.getInputStream();
 		OutputStream newFile = null;
 		try {
 			 newFile = new FileOutputStream(fileName);
@@ -127,10 +128,10 @@ public class ServerThread implements Runnable {
 		byte bytes[] = new byte[16*1024];
 		int count;
 		try{
-	        while ((count = in.read(bytes)) > 0) {
-	            newFile.write(bytes, 0, count);
-	        }
-	        newFile.close();
+		    while ((count = in.read(bytes)) > 0) {
+			newFile.write(bytes, 0, count);
+		    }
+		    newFile.close();
 		}
 		catch(IOException ioe){
 			return "File can not be written";
