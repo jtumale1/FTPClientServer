@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.FileSystemException;
+import java.nio.file.Files
 
 
 
@@ -42,12 +43,15 @@ public class ClientThread extends Thread {
 	}
 	
 	private void send() throws FileNotFoundException, IOException, FileSystemException{
-		String[] tokens = this.cmd.split(" ");
-		
+	    String[] tokens = this.cmd.split(" ");		
 		//sending a file to server
 		if(tokens[0].equals("put") && tokens.length == 2){
 			String fileName = tokens[1];
+			//TODO add check to make sure file exists...
 			File file = new File(fileName);
+			if (!exists(file)){
+			    throw new FileNotFoundException();
+			}
 			if (file.length() > Long.MAX_VALUE){
 				throw new FileSystemException("File size too large");
 			}
@@ -55,7 +59,7 @@ public class ClientThread extends Thread {
 			byte bytes[] = new byte[16*1024];
 			InputStream fileReader = new FileInputStream(file);
 			OutputStream fileUploader = this.socket.getOutputStream();
-				
+
 			int count;
 			while ((count = fileReader.read(bytes)) > 0) {
 			    fileUploader.write(bytes, 0, count);
@@ -65,16 +69,13 @@ public class ClientThread extends Thread {
 		}
 		//sending string to server
 		else{
-			//Get the output stream to the server
-			PrintWriter out = null;
-			out = new PrintWriter(this.socket.getOutputStream());
-			
-			//Send the command to the server
-			out.println(this.cmd);
-			out.flush();
-			
-		} 
-		
+		    //Get the output stream to the server
+		    PrintWriter out = null;
+		    out = new PrintWriter(this.socket.getOutputStream());
+		    //Send the command to the server
+		    out.println(this.cmd);
+		    out.flush();	
+		}
 	}
 	
 	private void receive() throws IOException{
@@ -109,7 +110,7 @@ public class ClientThread extends Thread {
 						       new InputStreamReader(this.socket.getInputStream())
 						       );
 		
-		//			Print the response
+		//Print the response
 		String input = null;
 		while ( (input = in.readLine()) != null){
 		    System.out.println(input);
