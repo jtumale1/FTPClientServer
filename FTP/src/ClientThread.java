@@ -69,9 +69,12 @@ public class ClientThread extends Thread {
   		    	String fileName = tokens[1];
 	    	//case 1, client issued a get file command and server is currently returning file. 
 	    	//We need to receive this incoming byte stream as file
+  				FileOutputStream fileWriter = new FileOutputStream(fileName);
+  				InputStream fileDownloader = this.socket.getInputStream();
+  		    	
 	    	if (cmd.equals("get")){
 	    		
-	    		receiveByteStreamAndWriteToFile(fileName);
+	    		receiveByteStreamAndWriteToFile(fileName, fileWriter, fileDownloader);
 		    		
 	    	}//if
 	    	//case 2 client issue another command, server is returning a string. Receive the string
@@ -80,7 +83,7 @@ public class ClientThread extends Thread {
 	    		printResponse();
 	    	}//else
 	    
-	    }else{ //token length > 1
+	    }else{ //token length < 1
     		//Receive the server's response
 	    	printResponse();
 	    }//else
@@ -107,23 +110,19 @@ public class ClientThread extends Thread {
 		while ((count = fileReader.read(bytes)) > 0) {
 		    fileUploader.write(bytes, 0, count);
 		}
+
 		fileReader.close();
-		fileUploader.close();
+		fileUploader.flush();
 		
 	}
 	
 	
 	
 	//helper method for receive()
-	private void receiveByteStreamAndWriteToFile(String fileName) throws IOException{
-		
-		FileOutputStream fileWriter = null;
-		InputStream fileDownloader = null;
-		try{
-			//TODO code to get file goes here
-			fileWriter = new FileOutputStream(fileName);
-			fileDownloader = this.socket.getInputStream();
-    
+	private void receiveByteStreamAndWriteToFile(String fileName, FileOutputStream fileWriter, 
+			InputStream fileDownloader) throws IOException{
+
+		try{    
 			//write file to client system
 			byte bytes[] = new byte[16*1024];
 			int count;
@@ -140,11 +139,10 @@ public class ClientThread extends Thread {
 
 	//helper method for receive()
 	public void printResponse() throws IOException{
-		
-		
-		
+
 		BufferedReader 	in = new BufferedReader(
 				       new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
+			       //new InputStreamReader(fileDownloader)
 				       );
 
 		//Print the response

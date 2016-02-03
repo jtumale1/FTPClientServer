@@ -49,8 +49,8 @@ public class ServerThread implements Runnable {
 					);
 			String command = "";
 			String response = "";
-			
 			while((command = in.readLine()) != null){
+														//Commands are not being read*****
 				if(command.equalsIgnoreCase("quit")) {
 					out.println("Goodbye, Exiting");
 					break;
@@ -107,6 +107,7 @@ public class ServerThread implements Runnable {
 				case "get":
 					return this.get(tokens[1]);
 				case "put":
+					System.out.println("Put.");
 					return this.put(tokens[1]);
 				case "cd":
 					return this.cd(tokens[1]);
