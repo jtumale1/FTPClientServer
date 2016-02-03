@@ -46,10 +46,8 @@ public class Client {
 				//this forces our client to be synchronous for now, program blocks until thread dies
 				clientThread.join();
 				
-			}
-			
+			}	
 		}
-		
 		this.clientSocket.close();
 	}
 	

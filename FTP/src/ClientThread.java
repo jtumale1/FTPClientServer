@@ -77,12 +77,12 @@ public class ClientThread extends Thread {
 	    	//case 2 client issue another command, server is returning a string. Receive the string
 	    	else{
 	    		//Receive the server's response
-	    		printResponse(this.socket);
+	    		printResponse();
 	    	}//else
 	    
 	    }else{ //token length > 1
     		//Receive the server's response
-	    	printResponse(this.socket);
+	    	printResponse();
 	    }//else
 	    
 	}//receive
@@ -139,27 +139,21 @@ public class ClientThread extends Thread {
 	}
 
 	//helper method for receive()
-	public void printResponse(Socket socket){
-		socket = this.socket;
-		BufferedReader in = null;
-		try {
-			in = new BufferedReader(
-				       new InputStreamReader(socket.getInputStream())
+	public void printResponse() throws IOException{
+		
+		
+		
+		BufferedReader 	in = new BufferedReader(
+				       new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
 				       );
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
 		//Print the response
 		String input = null;
-		try {
-			while ( (input = in.readLine()) != null){
+	
+		while ( (input = in.readLine()) != null){
 				System.out.println(input);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}//while
-		
+		}
+
 	}	
 	
 }
