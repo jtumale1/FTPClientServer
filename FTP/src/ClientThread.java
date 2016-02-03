@@ -47,25 +47,8 @@ public class ClientThread extends Thread {
 		//sending a file to server
 		if(tokens[0].equals("put") && tokens.length == 2){
 			String fileName = tokens[1];
-			//TODO add check to make sure file exists...
-			File file = new File(fileName);
-			if (!file.exists()){
-			    throw new FileNotFoundException();
-			}
-			if (file.length() > Long.MAX_VALUE){
-				throw new FileSystemException("File size too large");
-			}
-			
-			byte bytes[] = new byte[16*1024];
-			InputStream fileReader = new FileInputStream(file);
-			OutputStream fileUploader = this.socket.getOutputStream();
-
-			int count;
-			while ((count = fileReader.read(bytes)) > 0) {
-			    fileUploader.write(bytes, 0, count);
-			}
-			fileReader.close();
-			fileUploader.close();
+	
+			readBytesAndOutputToStream(fileName);			
 		}
 		//sending string to server
 		else{
@@ -80,39 +63,22 @@ public class ClientThread extends Thread {
 	
 	private void receive() throws IOException{
 	    String[] tokens = this.cmd.split(" ");
-	    System.out.println(tokens.length);
 	    String cmd = tokens[0];
-	    
+	
 	    if (tokens.length >1){
   		    	String fileName = tokens[1];
 	    	//case 1, client issued a get file command and server is currently returning file. 
 	    	//We need to receive this incoming byte stream as file
 	    	if (cmd.equals("get")){
-	    		FileOutputStream fileWriter = null;
-	    		InputStream fileDownloader = null;
-	    		try{
-	    			//TODO code to get file goes here
-	    			fileWriter = new FileOutputStream(fileName);
-	    			fileDownloader = this.socket.getInputStream();
-		    
-	    			//write file to client system
-	    			byte bytes[] = new byte[16*1024];
-	    			int count;
-	    			while ((count = fileDownloader.read(bytes)) > 0) {
-	    				fileWriter.write(bytes, 0, count);
-	    			}//while
-	    		}//try
-	    		finally{
-	    			if (fileWriter != null) fileWriter.close();
-	    			if (fileDownloader != null) fileDownloader.close();
-	    		}//finally
+	    		
+	    		receiveByteStreamAndWriteToFile(fileName);
+		    		
 	    	}//if
 	    	//case 2 client issue another command, server is returning a string. Receive the string
 	    	else{
 	    		//Receive the server's response
 	    		printResponse(this.socket);
 	    	}//else
-	 
 	    
 	    }else{ //token length > 1
     		//Receive the server's response
@@ -121,6 +87,58 @@ public class ClientThread extends Thread {
 	    
 	}//receive
 	
+	//helper method for send()
+	private void readBytesAndOutputToStream(String fileName) 
+			throws FileNotFoundException, IOException, FileSystemException{
+		
+		File file = new File(fileName);
+		if (!file.exists()){
+		    throw new FileNotFoundException();
+		}
+		if (file.length() > Long.MAX_VALUE){
+			throw new FileSystemException("File size too large");
+		}
+		
+		byte bytes[] = new byte[16*1024];
+		InputStream fileReader = new FileInputStream(file);
+		OutputStream fileUploader = this.socket.getOutputStream();
+
+		int count;
+		while ((count = fileReader.read(bytes)) > 0) {
+		    fileUploader.write(bytes, 0, count);
+		}
+		fileReader.close();
+		fileUploader.close();
+		
+	}
+	
+	
+	
+	//helper method for receive()
+	private void receiveByteStreamAndWriteToFile(String fileName) throws IOException{
+		
+		FileOutputStream fileWriter = null;
+		InputStream fileDownloader = null;
+		try{
+			//TODO code to get file goes here
+			fileWriter = new FileOutputStream(fileName);
+			fileDownloader = this.socket.getInputStream();
+    
+			//write file to client system
+			byte bytes[] = new byte[16*1024];
+			int count;
+			while ((count = fileDownloader.read(bytes)) > 0) {
+				fileWriter.write(bytes, 0, count);
+			}//while
+		}//try
+		finally{
+			if (fileWriter != null) fileWriter.close();
+			if (fileDownloader != null) fileDownloader.close();
+		}//finally
+		
+	}
+
+	//helper method for receive()
 	public void printResponse(Socket socket){
 		socket = this.socket;
 		BufferedReader in = null;
@@ -142,5 +160,6 @@ public class ClientThread extends Thread {
 			e.printStackTrace();
 		}//while
 		
-	}
+	}	
+	
 }

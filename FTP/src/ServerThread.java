@@ -152,7 +152,6 @@ public class ServerThread implements Runnable {
 		File[] filesList = curDir.listFiles();
 		
 	    for(File f : filesList){
-		System.out.println("filename: " + f.getName().trim() + " input: " + fileName.trim());
 	    	
 		if (f.getName().toString().trim().equals(fileName.trim())){
 		    try{
