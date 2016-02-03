@@ -80,42 +80,67 @@ public class ClientThread extends Thread {
 	
 	private void receive() throws IOException{
 	    String[] tokens = this.cmd.split(" ");
+	    System.out.println(tokens.length);
 	    String cmd = tokens[0];
-	    String fileName = tokens[1];
-	    //case 1, client issued a get file command and server is currently returning file. We need to receive this incoming byte stream as file
-	    if (cmd.equals("get")){
-		FileOutputStream fileWriter = null;
-		InputStream fileDownloader = null;
-		try{
-		    //TODO code to get file goes here
-		    fileWriter = new FileOutputStream(fileName);
-		    fileDownloader = this.socket.getInputStream();
+	    
+	    if (tokens.length >1){
+  		    	String fileName = tokens[1];
+	    	//case 1, client issued a get file command and server is currently returning file. 
+	    	//We need to receive this incoming byte stream as file
+	    	if (cmd.equals("get")){
+	    		FileOutputStream fileWriter = null;
+	    		InputStream fileDownloader = null;
+	    		try{
+	    			//TODO code to get file goes here
+	    			fileWriter = new FileOutputStream(fileName);
+	    			fileDownloader = this.socket.getInputStream();
 		    
-		    //write file to client system
-		    byte bytes[] = new byte[16*1024];
-		    int count;
-		    while ((count = fileDownloader.read(bytes)) > 0) {
-			fileWriter.write(bytes, 0, count);
-		    }
+	    			//write file to client system
+	    			byte bytes[] = new byte[16*1024];
+	    			int count;
+	    			while ((count = fileDownloader.read(bytes)) > 0) {
+	    				fileWriter.write(bytes, 0, count);
+	    			}//while
+	    		}//try
+	    		finally{
+	    			if (fileWriter != null) fileWriter.close();
+	    			if (fileDownloader != null) fileDownloader.close();
+	    		}//finally
+	    	}//if
+	    	//case 2 client issue another command, server is returning a string. Receive the string
+	    	else{
+	    		//Receive the server's response
+	    		printResponse(this.socket);
+	    	}//else
+	 
+	    
+	    }else{ //token length > 1
+    		//Receive the server's response
+	    	printResponse(this.socket);
+	    }//else
+	    
+	}//receive
+	
+	public void printResponse(Socket socket){
+		socket = this.socket;
+		BufferedReader in = null;
+		try {
+			in = new BufferedReader(
+				       new InputStreamReader(socket.getInputStream())
+				       );
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		finally{
-		    if (fileWriter != null) fileWriter.close();
-		    if (fileDownloader != null) fileDownloader.close();
-		}
-	    }
-		//case 2 client issue another command, server is returning a string. Receive the string
-	    else{
-		//Receive the server's response
-		BufferedReader in = new BufferedReader(
-						       new InputStreamReader(this.socket.getInputStream())
-						       );
-		
+
 		//Print the response
 		String input = null;
-		while ( (input = in.readLine()) != null){
-		    System.out.println(input);
-		}
-	    }
-	    
+		try {
+			while ( (input = in.readLine()) != null){
+				System.out.println(input);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}//while
+		
 	}
 }
