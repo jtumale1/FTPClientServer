@@ -10,7 +10,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.FileSystemException;
-import java.nio.file.Files
+import java.nio.file.Files;
 
 
 
@@ -49,7 +49,7 @@ public class ClientThread extends Thread {
 			String fileName = tokens[1];
 			//TODO add check to make sure file exists...
 			File file = new File(fileName);
-			if (!exists(file)){
+			if (!file.exists()){
 			    throw new FileNotFoundException();
 			}
 			if (file.length() > Long.MAX_VALUE){

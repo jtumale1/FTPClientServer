@@ -116,7 +116,13 @@ public class ServerThread implements Runnable {
 	}
 
 	private String put(String fileName) {
-	    InputStream in = this.clientSocket.getInputStream();
+	    InputStream in = null;
+		try {
+			in = this.clientSocket.getInputStream();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		OutputStream newFile = null;
 		try {
 			 newFile = new FileOutputStream(fileName);
