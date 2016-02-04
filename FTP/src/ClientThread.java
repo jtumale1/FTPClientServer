@@ -19,12 +19,24 @@ public class ClientThread extends Thread {
 	private Socket socket;
 	private String cmd;
 	private File currentWorkingDir = null;
+    private InputStream in;
+    private OutputStream out;
+    private BufferedReader br;
+    
 	
 	public ClientThread(Socket socket, String cmd){
 		super();
 		this.socket = socket;
 		this.cmd = cmd;
 		this.currentWorkingDir =  new File(System.getProperty("user.dir"));
+		try{
+		    this.in = socket.getInputStream();
+		    this.out = socket.getOutputStream();
+		    //   this.br = new BufferedReader(new InputStreamReader(System.in));
+		}
+		catch(Exception e){
+		    e.printStackTrace();   
+		}
 	}
 	
 	@Override
@@ -123,22 +135,18 @@ public class ClientThread extends Thread {
 	    
 	}//receive
 	
-    private boolean checkServerResponse() throws IOException{
+    private boolean checkServerResponse(){
 	BufferedReader 	in = new BufferedReader(
 						new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
 						//new InputStreamReader(fileDownloader)
 						);
-	StringBuffer response = new StringBuffer();
+	StringBuffer response = new StringBuffer;
 	String input = null;
 	while (((input = in.readLine()) != null) && !input.equals("")){
 	    response.append(input);
 	}
-
-
-	boolean acceptFile = (response.toString.equals("Accept")) ? true : false;  
-	System.out.println("Acceptingfile : " + acceptFile);
-	return acceptFile;
-
+	boolean acceptFile;
+	return acceptFile = (response.toString.equals("Accept")) ? true : false;  
     }
 
 	//helper method for send()
