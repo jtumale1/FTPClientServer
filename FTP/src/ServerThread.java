@@ -52,12 +52,12 @@ public class ServerThread implements Runnable {
 			String command = "";
 			String response = "";
 			while((command = in.readLine()) != null){
-				System.out.println("Client's pwd: " + this.currentWorkingDir);
 				if(command.equalsIgnoreCase("quit")) {
 					out.println("Goodbye, Exiting\n");
 					break;
 				}
-				System.out.println(command);
+				//System.out.println(command); Client's command
+				
 				//parse client's request
 				response = this.parse(command);
 				//return server's response

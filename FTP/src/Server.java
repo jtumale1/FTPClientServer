@@ -63,18 +63,25 @@ public class Server {
 
 	
 	public static void main(String[] args){
-		//TODO parse args for port number
-		try{
-			if(args.length == 1 && Integer.valueOf(args[0]) >= 49152 && Integer.valueOf(args[0]) <= 65535){
-				Server myFtpServer = new Server("localhost", 60000);
-				myFtpServer.run();
-			}
-			else{
-				throw new NumberFormatException();
-			}
+		
+		boolean DEVELOPMENT = true;
+		if (DEVELOPMENT){
+			Server myFtpServer = new Server("localhost", 60000);
+			myFtpServer.run();
 		}
-		catch(NumberFormatException nfe){
-			System.out.println("Server must be run with this syntax: java Server [port number (49152 - 65535) ]");
+		else{
+			try{
+				if(args.length == 1 && Integer.valueOf(args[0]) >= 49152 && Integer.valueOf(args[0]) <= 65535){
+					Server myFtpServer = new Server("localhost", Integer.valueOf(args[0]));
+					myFtpServer.run();
+				}
+				else{
+					throw new NumberFormatException();
+				}
+			}
+			catch(NumberFormatException nfe){
+				System.out.println("Server must be run with this syntax: java Server [port number (49152 - 65535) ]");
+			}
 		}
 		
 	}
