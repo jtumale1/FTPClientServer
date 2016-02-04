@@ -95,7 +95,7 @@ public class ClientThread extends Thread {
 	    		in.read(bytes);
 	    		
 	        	//CreateFile
-	        	FileOutputStream fos = new FileOutputStream("new" + fileName);
+	        	FileOutputStream fos = new FileOutputStream(fileName);
 	        	fos.write(bytes);
 	        	fos.close();
 	        	
