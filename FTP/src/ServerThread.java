@@ -150,81 +150,83 @@ public class ServerThread implements Runnable {
 	}
 
 	private String get(String fileName) {
+	    /*OutputStream out = null;
+	    try {
+		out = this.clientSocket.getOutputStream();
+	    } catch (IOException e1) {
+		e1.printStackTrace();
+		}*/
+	    
+	    File f = null;
+	    try{
+		f = new File(fileName);
+		if (!f.exists()){
+		    throw new FileNotFoundException();
+		}
+	    }
+	    catch(FileNotFoundException e){
+		this.notifyClient(false);
+		return "File does not exist";   
+	    }
+	    
+	    try{
+		if(f.isDirectory() == true){
+		    this.notifyClient(false);
+		    return "This is a directory, you can only move files.";
+		}
+		
+		this.notifyClient(true);
+		//move code here
 		OutputStream out = null;
 		try {
-			out = this.clientSocket.getOutputStream();
+		    out = this.clientSocket.getOutputStream();
 		} catch (IOException e1) {
-			e1.printStackTrace();
+		    e1.printStackTrace();
 		}
+		//create an input stream for the file
+		FileInputStream fileInputStream = new FileInputStream(f);
+		    //create a byte array
+		byte[] bytes = new byte[(int) f.length()];	    	
 		
-		File f = null;
-		try{
-			f = new File(fileName);
-			if (!f.exists()){
-				throw new FileNotFoundException();
-			}
-		}
-		catch(FileNotFoundException e){
-			this.notifyClient(false);
-			return "File does not exist";   
+		int count;
+		    //write the bytes to the output stream
+		while ((count = fileInputStream.read(bytes)) > 0){
+		    out.write(bytes, 0, count);
 		}
 		    
-			try{
-			    if(f.isDirectory() == true){
-				this.notifyClient(false);
-				return "This is a directory, you can only move files.";
-			    }
-			    
-			    this.notifyClient(true);
-			    
-			    //create an input stream for the file
-			    FileInputStream fileInputStream = new FileInputStream(f);
-			    //create a byte array
-			    byte[] bytes = new byte[(int) f.length()];	    	
-			    
-			    int count;
-			    //write the bytes to the output stream
-			    while ((count = fileInputStream.read(bytes)) > 0){
-	    	    		out.write(bytes, 0, count);
-			    }
-			    
-			    fileInputStream.close();
-			    out.flush();  
-			    
-			}
-			catch(IOException e){
-			    this.notifyClient(false);
-			    return "Error reading file";
-			}
-			
-			return "Download successful."; 
-		    
+		fileInputStream.close();
+		out.flush();  
 		
-		
+	    }
+	    catch(IOException e){
+		    this.notifyClient(false);
+		    return "Error reading file";
+	    }
+	    return "Download successful."; 
 	}
-	
+    
 	//Notify client whether or not the file exists.
     private void notifyClient(boolean sendingFile){
 	//write to stream send some text
     	if(sendingFile == false){
-    		try {
-				PrintWriter notify = new PrintWriter(clientSocket.getOutputStream());
-				notify.println("Error");
-				notify.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	    try {
+		PrintWriter notify = new PrintWriter(clientSocket.getOutputStream());
+		notify.println("Error");
+		notify.flush();
+	    } catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
     	}
     	else{
-			PrintWriter notify = null;
-			try {
-				notify = new PrintWriter(clientSocket.getOutputStream());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			notify.println("Accept");
-			notify.flush();
+	    PrintWriter notify = null;
+	    try {
+		notify = new PrintWriter(clientSocket.getOutputStream());
+	    } catch (IOException e) {
+		e.printStackTrace();
+	    }
+	    notify.println("Accept");
+	    notify.flush();
     	}
     }
 	
