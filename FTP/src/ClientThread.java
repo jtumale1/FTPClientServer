@@ -92,8 +92,9 @@ public class ClientThread extends Thread {
 	        	FileOutputStream fos = new FileOutputStream(fileName);
 	        	fos.write(bytes);
 	        	fos.close();
-	        	//printResponse();
-	    		
+	        	
+	        	printResponse();
+	        	
 	    	}//if
 	    	
 	    	//case 2 client issue another command, server is returning a string. Receive the string
