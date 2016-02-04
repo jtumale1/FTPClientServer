@@ -23,12 +23,14 @@ public class ServerThread implements Runnable {
 	
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
+	private File currentWorkingDir;
 	private volatile Boolean active;
 	
 	public ServerThread(Socket clientSocket, ServerSocket serverSocket, Boolean active){
 		this.serverSocket = serverSocket;
 		this.clientSocket = clientSocket;
 		this.active = active;
+		this.currentWorkingDir = new File(System.getProperty("user.dir"));
 	}
 	
 	/**
@@ -50,11 +52,12 @@ public class ServerThread implements Runnable {
 			String command = "";
 			String response = "";
 			while((command = in.readLine()) != null){
-														//Commands are not being read*****
+				System.out.println("Client's pwd: " + this.currentWorkingDir);
 				if(command.equalsIgnoreCase("quit")) {
 					out.println("Goodbye, Exiting");
 					break;
 				}
+				System.out.println(command);
 				//parse client's request
 				response = this.parse(command);
 				//return server's response
@@ -148,49 +151,51 @@ public class ServerThread implements Runnable {
 	}
 
 	private String get(String fileName) {
-
 		File curDir = new File(".");
 		File[] filesList = curDir.listFiles();
 		
 	    for(File f : filesList){
-	    	
-		if (f.getName().toString().trim().equals(fileName.trim())){
-		    try{
-			
-			File file = new File(fileName);
-			if (file.length() > Long.MAX_VALUE){
-			    throw new FileSystemException("File size too large");
+		    	
+			if (f.getName().toString().trim().equals(fileName.trim())){
+			    try{
+					File file = new File(fileName);
+					if (file.length() > Long.MAX_VALUE){
+					    throw new FileSystemException("File size too large");
+					}
+			    		
+					byte bytes[] = new byte[16*1024];
+					InputStream fileReader = new FileInputStream(file);
+					OutputStream fileUploader = clientSocket.getOutputStream();
+			    		
+					int count;
+					while ((count = fileReader.read(bytes)) > 0) {
+					    fileUploader.write(bytes, 0, count);
+					}
+						
+					fileReader.close();
+					fileUploader.close();
+			    }
+			    catch(IOException e){
+			    	return "Error reading file";
+			    }
+			    
+			    return "Download succesfull."; 
 			}
-	    		
-			byte bytes[] = new byte[16*1024];
-			InputStream fileReader = new FileInputStream(file);
-			OutputStream fileUploader = clientSocket.getOutputStream();
-	    		
-			int count;
-			while ((count = fileReader.read(bytes)) > 0) {
-			    fileUploader.write(bytes, 0, count);
-			}
-			fileReader.close();
-			fileUploader.close();
-		    }catch(IOException e){
-			return "Error reading file";
-		    }
-		    
-		    return "Download succesfull."; 
-		}
 	    }
 	    return "File does not exist";   
 	}
 	
 	private String cd(String newPath){
-		File dir = new File(newPath);
+		//does not actually change the location.
+		File dir = new File(this.currentWorkingDir, newPath);
 		if(dir.isDirectory() == true){
 			System.setProperty("user.dir", dir.getAbsolutePath());
-			}
+			this.currentWorkingDir = dir;
+		}
 		else{
 			return newPath + " is not a directory.\n";
 		}
-		return dir.getAbsolutePath();
+		return "Changed directory"; //dir.getAbsolutePath();
 	}
 	
    	private String pwd(){
@@ -201,8 +206,8 @@ public class ServerThread implements Runnable {
 	
 	private String ls(){
 		StringBuffer output = new StringBuffer();
-		File currentDirectory = new File(System.getProperty("user.dir"));
-		String childs[] = currentDirectory.list();
+		//File currentDirectory = new File(System.getProperty("user.dir"));
+		String childs[] = this.currentWorkingDir.list();
 		for(String file: childs){
 			output.append(file + "\n");
 		}
@@ -212,7 +217,7 @@ public class ServerThread implements Runnable {
 	private String mkdir(String dirName) {
 		String directory = "";
 		//Makes file object to check if it exists
-		File file = new File(dirName);
+		File file = new File(this.currentWorkingDir, dirName);
 		if(!file.exists()){
 			file.mkdir();
 			directory = "Directory created!\n";

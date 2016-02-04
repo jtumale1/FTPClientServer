@@ -18,11 +18,13 @@ public class ClientThread extends Thread {
 	
 	private Socket socket;
 	private String cmd;
+	private File currentWorkingDir = null;
 	
 	public ClientThread(Socket socket, String cmd){
 		super();
 		this.socket = socket;
 		this.cmd = cmd;
+		this.currentWorkingDir =  new File(System.getProperty("user.dir"));
 	}
 	
 	@Override
