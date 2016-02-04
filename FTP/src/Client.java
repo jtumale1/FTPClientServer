@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 public class Client {
 	
-	private ExecutorService threadPool = Executors.newCachedThreadPool();
+	//private ExecutorService threadPool = Executors.newCachedThreadPool();
 	private Socket clientSocket = null;
 	private Scanner scanner = new Scanner(System.in);
 	private PrintStream output = null;
@@ -35,21 +35,24 @@ public class Client {
 		while(true){
 			System.out.print("ftpclient> ");	
 			input = this.scanner.nextLine();
-			if(input.equalsIgnoreCase("quit")){
-				//close connection 
-				break;
-				
-			}
-			else{
-				ClientThread clientThread = new ClientThread(this.clientSocket, input);
-				this.threadPool.execute(clientThread);
-				
+		
+			ClientThread clientThread = new ClientThread(this.clientSocket, input);
+			clientThread.start();
+			//this.threadPool.execute(clientThread);
+			
+			try{
 				//this forces our client to be synchronous for now, program blocks until thread dies
 				clientThread.join();
-				
-			}	
+			}
+			catch(InterruptedException ie){
+				ie.printStackTrace();
+			}
+			if(input.equals("quit")) break;
+			
 		}
-		//this.clientSocket.close();
+		if(this.clientSocket != null){
+			this.clientSocket.close();
+		}
 	}
 	
 	
@@ -60,6 +63,7 @@ public class Client {
 			Client client = new Client("localhost", 9000);
 			System.out.println("Running client!");
 			client.run();
+			System.out.println("Client shutdown!");
 		}catch(Exception ex){
 			System.out.println(ex.getStackTrace());
 		}

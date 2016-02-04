@@ -43,6 +43,7 @@ public class ClientThread extends Thread {
 		catch(IOException ioe){
 			System.out.println("Error reading file or socket");
 		}
+
 	}
 	
 	private void send() throws FileNotFoundException, IOException, FileSystemException{
@@ -153,10 +154,9 @@ public class ClientThread extends Thread {
 		//Print the response
 		String input = null;
 	
-		while ( (input = in.readLine()) != null){
+		while ((input = in.readLine()) != null && !input.equals("")){
 				System.out.println(input);
 		}
-
 	}	
 	
 }
