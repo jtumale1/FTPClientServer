@@ -56,7 +56,6 @@ public class ServerThread implements Runnable {
 					out.println("Goodbye, Exiting\n");
 					break;
 				}
-				//System.out.println(command); Client's command
 				
 				//parse client's request
 				response = this.parse(command);
@@ -109,7 +108,6 @@ public class ServerThread implements Runnable {
 				case "get":
 					return this.get(tokens[1]);
 				case "put":
-					System.out.println("Put.");
 					return this.put(tokens[1]);
 				case "cd":
 					return this.cd(tokens[1]);
@@ -125,21 +123,22 @@ public class ServerThread implements Runnable {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		OutputStream newFile = null;
-		try {
-			 newFile = new FileOutputStream(fileName);
-		} 
-		catch (FileNotFoundException e) {
-			return "File: " + fileName + " not found";
-		}
-		
 		byte bytes[] = new byte[16*1024];
 		int count;
-		try{
-		    while ((count = in.read(bytes)) > 0) {
-			newFile.write(bytes, 0, count);
-		    }
-		    newFile.close();
+		try{		
+			//read the bytes into the input stream
+			in.read(bytes);
+			//print this. dont remove.
+			System.out.println("");
+			//print the file
+//	    	for (int i = 0; i < bytes.length; i++){		
+//	    		System.out.print((char) bytes[i]);
+//	    	}
+			//Output into a file
+	    	FileOutputStream fos = new FileOutputStream(fileName);
+	    	fos.write(bytes);
+	    	fos.close();
+			
 		}
 		catch(IOException ioe){
 			return "File can not be written";

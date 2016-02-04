@@ -51,6 +51,12 @@ public class ClientThread extends Thread {
 		//sending a file to server
 		if(tokens[0].equals("put") && tokens.length == 2){
 			String fileName = tokens[1];
+
+		    PrintWriter out = new PrintWriter(this.socket.getOutputStream());
+		    //Send the command to the server
+		    out.println(this.cmd);
+		    out.flush();	
+
 			readBytesAndOutputToStream(fileName);			
 		}
 		//sending string to server
@@ -108,17 +114,29 @@ public class ClientThread extends Thread {
 			throw new FileSystemException("File size too large");
 		}
 		
-		byte bytes[] = new byte[16*1024];
-		InputStream fileReader = new FileInputStream(file);
-		OutputStream fileUploader = this.socket.getOutputStream();
+		//get the output stream
+		OutputStream out = this.socket.getOutputStream();
 
-		int count;
-		while ((count = fileReader.read(bytes)) > 0) {
-		    fileUploader.write(bytes, 0, count);
-		}
+		//create an input stream for the file
+		FileInputStream fileInputStream = new FileInputStream(file);
+		
+		//create a byte array
+		byte[] bytes = new byte[(int) file.length()];	    	
+    	
+		//write the bytes to the output stream
+    	int count;
+    	while ((count = fileInputStream.read(bytes)) > 0){
+    		out.write(bytes, 0, count);
+    	}
 
-		fileReader.close();
-		fileUploader.flush();
+    	//print the file content
+//    	for (int i = 0; i < bytes.length; i++){	
+//    		System.out.print((char) bytes[i]);
+//    	}
+    	
+    	//close the file input stream
+    	fileInputStream.close();
+    	//out.close();
 		
 	}
 	
