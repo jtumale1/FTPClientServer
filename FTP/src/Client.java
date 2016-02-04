@@ -79,7 +79,7 @@ public class Client {
 		else{
 		
 			try{
-				if(args.length == 2 && Integer.valueOf(args[1]) >= 49152 && Integer.valueOf(args[1]) <= 65535){
+				if(args.length == 2 && Integer.valueOf(args[1]) <= 65535){
 					Client client = new Client(args[0], Integer.valueOf(args[1]));
 					System.out.println("Running client!");
 					client.run();
