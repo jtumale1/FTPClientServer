@@ -84,24 +84,29 @@ public class ClientThread extends Thread {
 		    
 		    //first check to make sure there was no error in getting file
 		    //check server's response. If the exist existed then we need to write
-
-		    //otherwise print error message
-
-		    //if no error then read file
-	    		InputStream in = this.socket.getInputStream();
-	    		
-	    		byte[] bytes = new byte[16*1024];
-
-	    		in.read(bytes);
-	    		
-	        	//CreateFile
-	        	FileOutputStream fos = new FileOutputStream(fileName);
-	        	fos.write(bytes);
-	        	fos.close();
-	        	
-	        	printResponse();
-	        	
-	    	}//if
+		    boolean acceptFile = this.checkServerResponse();
+		    if(acceptFile){
+			    
+			    //if no error then read file
+			    InputStream in = this.socket.getInputStream();
+			    
+			    byte[] bytes = new byte[16*1024];
+			    
+			    in.read(bytes);
+			    
+			    //CreateFile
+			    FileOutputStream fos = new FileOutputStream(fileName);
+			    fos.write(bytes);
+			    fos.close();
+			    
+			    printResponse();
+			    
+		    }
+		    //otherwise print error messag
+		    else{
+			printResponse();
+		    }
+		}//if
 	    	
 	    	//case 2 client issue another command, server is returning a string. Receive the string
 	    	else{
@@ -118,6 +123,20 @@ public class ClientThread extends Thread {
 	    
 	}//receive
 	
+    private boolean checkServerResponse(){
+	BufferedReader 	in = new BufferedReader(
+						new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
+						//new InputStreamReader(fileDownloader)
+						);
+	StringBuffer response = new StringBuffer;
+	String input = null;
+	while (((input = in.readLine()) != null) && !input.equals("")){
+	    response.append(input);
+	}
+	boolean acceptFile;
+	return acceptFile = (response.toString.equals("Accept")) ? true : false;  
+    }
+
 	//helper method for send()
 	private void readBytesAndOutputToStream(String fileName) 
 			throws FileNotFoundException, IOException, FileSystemException{
