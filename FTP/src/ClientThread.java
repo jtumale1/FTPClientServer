@@ -116,7 +116,7 @@ public class ClientThread extends Thread {
 		    }
 		    //otherwise print error messag
 		    else{
-			printResponse();
+		    	printResponse();
 		    }
 		}//if
 	    	
@@ -140,6 +140,7 @@ public class ClientThread extends Thread {
 						new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
 						//new InputStreamReader(fileDownloader)
 						);
+<<<<<<< Updated upstream
 	StringBuffer response = new StringBuffer;
 	String input = null;
 	while (((input = in.readLine()) != null) && !input.equals("")){
@@ -147,6 +148,27 @@ public class ClientThread extends Thread {
 	}
 	boolean acceptFile;
 	return acceptFile = (response.toString.equals("Accept")) ? true : false;  
+=======
+	
+	StringBuffer response = new StringBuffer();
+	String input = null;
+	
+//	while (((input = in.readLine()) != null) && !input.equals("")){
+//	    response.append(input);
+//	}
+	
+//	if (((input = in.readLine()) != null) && !input.equals("")){
+//	    response.append(input);
+//	}
+	
+	input = in.readLine();
+	response.append(input);
+
+	boolean acceptFile = (response.toString().equals("Accept")) ? true : false;  
+	System.out.println("Acceptingfile : " + acceptFile);
+	
+	return acceptFile;
+
     }
 
 	//helper method for send()
