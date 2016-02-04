@@ -51,12 +51,13 @@ public class ClientThread extends Thread {
 		//sending a file to server
 		if(tokens[0].equals("put") && tokens.length == 2){
 			String fileName = tokens[1];
-
+			
+			//send command the server first
 		    PrintWriter out = new PrintWriter(this.socket.getOutputStream());
-		    //Send the command to the server
 		    out.println(this.cmd);
 		    out.flush();	
-
+		    
+		    //stream the file next
 			readBytesAndOutputToStream(fileName);			
 		}
 		//sending string to server
@@ -80,11 +81,19 @@ public class ClientThread extends Thread {
   		    	
 	    	if (cmd.equals("get")){
 	    		//case 1, client issued a get file command and server is currently returning file. 
-		    	//We need to receive this incoming byte stream as file
-	  				FileOutputStream fileWriter = new FileOutputStream(fileName);
-	  				InputStream fileDownloader = this.socket.getInputStream();
-	    		receiveByteStreamAndWriteToFile(fileName, fileWriter, fileDownloader);
-		    		
+
+	    		InputStream in = this.socket.getInputStream();
+	    		
+	    		byte[] bytes = new byte[16*1024];
+
+	    		in.read(bytes);
+	    		
+	        	//CreateFile
+	        	FileOutputStream fos = new FileOutputStream(fileName);
+	        	fos.write(bytes);
+	        	fos.close();
+	        	//printResponse();
+	    		
 	    	}//if
 	    	
 	    	//case 2 client issue another command, server is returning a string. Receive the string

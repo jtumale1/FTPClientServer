@@ -128,12 +128,15 @@ public class ServerThread implements Runnable {
 		try{		
 			//read the bytes into the input stream
 			in.read(bytes);
+			
 			//print this. dont remove.
 			System.out.println("");
+			
 			//print the file
 //	    	for (int i = 0; i < bytes.length; i++){		
 //	    		System.out.print((char) bytes[i]);
 //	    	}
+			
 			//Output into a file
 	    	FileOutputStream fos = new FileOutputStream(fileName);
 	    	fos.write(bytes);
@@ -148,6 +151,14 @@ public class ServerThread implements Runnable {
 	}
 
 	private String get(String fileName) {
+		OutputStream out = null;
+		try {
+			out = this.clientSocket.getOutputStream();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		
+		
 		File curDir = new File(".");
 		File[] filesList = curDir.listFiles();
 		
@@ -155,28 +166,28 @@ public class ServerThread implements Runnable {
 		    	
 			if (f.getName().toString().trim().equals(fileName.trim())){
 			    try{
-					File file = new File(fileName);
-					if (file.length() > Long.MAX_VALUE){
-					    throw new FileSystemException("File size too large");
-					}
-			    		
-					byte bytes[] = new byte[16*1024];
-					InputStream fileReader = new FileInputStream(file);
-					OutputStream fileUploader = clientSocket.getOutputStream();
-			    		
-					int count;
-					while ((count = fileReader.read(bytes)) > 0) {
-					    fileUploader.write(bytes, 0, count);
-					}
-						
-					fileReader.close();
-					fileUploader.close();
+			    				    	
+			    				    	
+	    			//create an input stream for the file
+	    			FileInputStream fileInputStream = new FileInputStream(f);
+	    			//create a byte array
+	    			byte[] bytes = new byte[(int) f.length()];	    	
+	    	    	
+	    	    	int count;
+	    	    	//write the bytes to the output stream
+	    	    	while ((count = fileInputStream.read(bytes)) > 0){
+	    	    		out.write(bytes, 0, count);
+	    	    	}
+
+	    	    	fileInputStream.close();
+	    	    	out.flush();  
+				
 			    }
 			    catch(IOException e){
 			    	return "Error reading file";
 			    }
 			    
-			    return "Download succesfull."; 
+			    return "Download successful."; 
 			}
 	    }
 	    return "File does not exist";   
