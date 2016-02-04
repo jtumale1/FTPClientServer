@@ -133,8 +133,12 @@ public class ClientThread extends Thread {
 	while (((input = in.readLine()) != null) && !input.equals("")){
 	    response.append(input);
 	}
-	boolean acceptFile;
-	return acceptFile = (response.toString().equals("Accept")) ? true : false;  
+
+
+	boolean acceptFile = (response.toString.equals("Accept")) ? true : false;  
+	System.out.println("Acceptingfile : " + acceptFile);
+	return acceptFile;
+
     }
 
 	//helper method for send()
