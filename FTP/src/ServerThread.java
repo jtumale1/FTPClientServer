@@ -124,7 +124,6 @@ public class ServerThread implements Runnable {
 			e1.printStackTrace();
 		}
 		byte bytes[] = new byte[16*1024];
-		int count;
 		try{		
 			//read the bytes into the input stream
 			in.read(bytes);
@@ -158,17 +157,26 @@ public class ServerThread implements Runnable {
 			e1.printStackTrace();
 		}
 		
-		File curDir = new File(".");
-		File[] filesList = curDir.listFiles();
-		for(File f : filesList){
+		File f = null;
+		try{
+			f = new File(fileName);
+			if (!f.exists()){
+				throw new FileNotFoundException();
+			}
+		}
+		catch(FileNotFoundException e){
+			this.notifyClient(false);
+			return "File does not exist";   
+		}
 		    
-		    if (f.getName().toString().trim().equals(fileName.trim())){
 			try{
 			    if(f.isDirectory() == true){
 				this.notifyClient(false);
-				return "This is a directory, you can only move files."
+				return "This is a directory, you can only move files.";
 			    }
+			    
 			    this.notifyClient(true);
+			    
 			    //create an input stream for the file
 			    FileInputStream fileInputStream = new FileInputStream(f);
 			    //create a byte array
@@ -190,20 +198,34 @@ public class ServerThread implements Runnable {
 			}
 			
 			return "Download successful."; 
-		    }
-		}
-		this.notifyClient(false);
-		return "File does not exist";   
+		    
+		
+		
 	}
-
-    private void notifyClient(boolean sendingfile){
+	
+	//Notify client whether or not the file exists.
+    private void notifyClient(boolean sendingFile){
 	//write to stream send some text
-	if(sendingFile == false){
-
-	}
-	else{
-
-	}
+    	if(sendingFile == false){
+    		try {
+				PrintWriter notify = new PrintWriter(clientSocket.getOutputStream());
+				notify.println("Error");
+				notify.flush();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	else{
+			PrintWriter notify = null;
+			try {
+				notify = new PrintWriter(clientSocket.getOutputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			notify.println("Accept");
+			notify.flush();
+    	}
     }
 	
 	private String cd(String newPath){
