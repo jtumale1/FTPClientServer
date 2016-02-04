@@ -58,14 +58,47 @@ public class Client {
 	
 	
 	public static void main(String[] args){
-		
-		try{
-			Client client = new Client("localhost", 9000);
+		boolean DEVELOPMENT = true;
+		if(DEVELOPMENT){
+			Client client = new Client("localhost", 60000);
 			System.out.println("Running client!");
-			client.run();
+			try {
+				client.run();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("Client shutdown!");
-		}catch(Exception ex){
-			System.out.println(ex.getStackTrace());
+		}
+		else{
+		
+			try{
+				if(args.length == 2 && Integer.valueOf(args[1]) >= 49152 && Integer.valueOf(args[1]) <= 65535){
+					Client client = new Client(args[0], Integer.valueOf(args[1]));
+					System.out.println("Running client!");
+					client.run();
+					System.out.println("Client shutdown!");
+				}
+				else{
+					throw new NumberFormatException();
+				}
+			}
+			catch (UnknownHostException e) {
+				System.out.println("Count not find host");
+			}
+			catch(NumberFormatException nfe){
+				System.out.println("Client must be run with this syntax: java Client hostname port_number" + 
+						"\n e.g. java Client localhost 60000");
+			}
+			catch(Exception ex){
+				ex.printStackTrace();
+			}
 		}
 	}
 }

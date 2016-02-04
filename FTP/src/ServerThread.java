@@ -54,14 +54,14 @@ public class ServerThread implements Runnable {
 			while((command = in.readLine()) != null){
 				System.out.println("Client's pwd: " + this.currentWorkingDir);
 				if(command.equalsIgnoreCase("quit")) {
-					out.println("Goodbye, Exiting");
+					out.println("Goodbye, Exiting\n");
 					break;
 				}
 				System.out.println(command);
 				//parse client's request
 				response = this.parse(command);
 				//return server's response
-				out.println(response);
+				out.println(response + "\n");
 			}
 			//close reader and writer
 			out.close();
@@ -191,7 +191,7 @@ public class ServerThread implements Runnable {
 			this.currentWorkingDir = dir;
 		}
 		else{
-			return newPath + " is not a directory.\n";
+			return newPath + " is not a directory.";
 		}
 		return "Changed directory"; //dir.getAbsolutePath();
 	}
@@ -215,9 +215,9 @@ public class ServerThread implements Runnable {
 		File file = new File(this.currentWorkingDir, dirName);
 		if(!file.exists()){
 			file.mkdir();
-			return "Directory created!\n";
+			return "Directory created!";
 		}
-		return "Directory not created, it already exists!\n";
+		return "Directory not created, it already exists!";
 		
 	}
 	
@@ -228,12 +228,12 @@ public class ServerThread implements Runnable {
 		if(file.exists()){
 			file.delete();
 			if (!file.exists()){
-				return "File Deleted!\n";
+				return "File Deleted!";
 			}
 			else{
 				return "There was an error deleting the file";
 			}
 		}
-		return "File not deleted. File does not exist!\n";	
+		return "File not deleted. File does not exist!";	
 	}
 }

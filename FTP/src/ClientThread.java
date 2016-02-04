@@ -154,7 +154,7 @@ public class ClientThread extends Thread {
 		//Print the response
 		String input = null;
 	
-		while ((input = in.readLine()) != null && !input.equals("")){
+		while (((input = in.readLine()) != null) && !input.equals("")){
 				System.out.println(input);
 		}
 	}	
