@@ -98,13 +98,10 @@ public class ClientThread extends Thread {
 		    //check server's response. If the exist existed then we need to write
 		    boolean acceptFile = this.checkServerResponse();
 		    if(acceptFile){
-			    
-			    //if no error then read file
-			    InputStream in = this.socket.getInputStream();
-			    
+			    //if no error then read file  
 			    byte[] bytes = new byte[16*1024];
 			    
-			    in.read(bytes);
+			    this.in.read(bytes);
 			    
 			    //CreateFile
 			    FileOutputStream fos = new FileOutputStream(fileName);
@@ -114,7 +111,7 @@ public class ClientThread extends Thread {
 			    printResponse();
 			    
 		    }
-		    //otherwise print error messag
+		    //otherwise print error message
 		    else{
 		    	printResponse();
 		    }
@@ -136,21 +133,16 @@ public class ClientThread extends Thread {
 	}//receive
 	
     private boolean checkServerResponse() throws IOException{
-	/*BufferedReader 	in = new BufferedReader(
-						new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
-						//new InputStreamReader(fileDownloader)
-						);
-*/
-	StringBuffer response = new StringBuffer();
-	String input = null;
+		StringBuffer response = new StringBuffer();
+		String input = null;
+		
+		input = this.br.readLine();
+		response.append(input);
 	
-	input = this.br.readLine();
-	response.append(input);
-
-	boolean acceptFile = (response.toString().equals("Accept")) ? true : false;  
-	System.out.println("Acceptingfile : " + acceptFile);
-	
-	return acceptFile;
+		boolean acceptFile = (response.toString().equals("Accept")) ? true : false;  
+		System.out.println("Accepting file : " + acceptFile);
+		
+		return acceptFile;
 
     }
 
@@ -195,6 +187,7 @@ public class ClientThread extends Thread {
 	
 	
 	//helper method for receive()
+	@SuppressWarnings("unused")
 	private void receiveByteStreamAndWriteToFile(String fileName, FileOutputStream fileWriter, 
 			InputStream fileDownloader) throws IOException{
 
@@ -215,15 +208,8 @@ public class ClientThread extends Thread {
 
 	//helper method for receive()
 	public void printResponse() throws IOException{
-
-		/*BufferedReader 	in = new BufferedReader(
-				       new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
-			       //new InputStreamReader(fileDownloader)
-				       );
-*/
 		//Print the response
 		String input = null;
-	
 		while (((input = this.br.readLine()) != null) && !input.equals("")){
 				System.out.println(input);
 		}

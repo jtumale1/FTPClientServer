@@ -67,13 +67,18 @@ public class Client {
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IOException e) {
+			} 
+			catch(ConnectException ce){
+				System.out.println("Connection to server refused.");
+			}
+			catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
 			System.out.println("Client shutdown!");
 		}
 		else{
@@ -88,6 +93,9 @@ public class Client {
 				else{
 					throw new NumberFormatException();
 				}
+			}
+			catch(ConnectException ce){
+				System.out.println("Connection to server refused.");
 			}
 			catch (UnknownHostException e) {
 				System.out.println("Count not find host");

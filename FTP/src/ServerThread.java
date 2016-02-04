@@ -25,12 +25,26 @@ public class ServerThread implements Runnable {
 	private Socket clientSocket;
 	private File currentWorkingDir;
 	private volatile Boolean active;
+	private PrintWriter out;
+	private InputStream in;
+	private BufferedReader br;
 	
 	public ServerThread(Socket clientSocket, ServerSocket serverSocket, Boolean active){
 		this.serverSocket = serverSocket;
 		this.clientSocket = clientSocket;
 		this.active = active;
 		this.currentWorkingDir = new File(System.getProperty("user.dir"));
+		//out is the message buffer to return to the client
+		try {
+			this.out = new PrintWriter(clientSocket.getOutputStream(), true);
+			//br is the incoming message buffer from the client to be read by the server
+			this.br = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	/**
@@ -43,28 +57,23 @@ public class ServerThread implements Runnable {
 		System.out.println("Running thread!");
 		
 		try {
-			//out is the message buffer to return to the client
-			PrintWriter out = new PrintWriter(this.clientSocket.getOutputStream(), true);
-			//in is the incoming message buffer from the client to be read by the server
-			BufferedReader in = new BufferedReader( 
-					new InputStreamReader(this.clientSocket.getInputStream())
-					);
 			String command = "";
 			String response = "";
-			while((command = in.readLine()) != null){
+			while((command = this.br.readLine()) != null){
 				if(command.equalsIgnoreCase("quit")) {
-					out.println("Goodbye, Exiting\n");
+					this.out.println("Goodbye, Exiting\n");
 					break;
 				}
 				
 				//parse client's request
 				response = this.parse(command);
+				
 				//return server's response
-				out.println(response + "\n");
+				this.out.println(response + "\n");
 			}
 			//close reader and writer
-			out.close();
-			in.close();
+			this.out.close();
+			this.br.close();
 		} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -145,13 +154,6 @@ public class ServerThread implements Runnable {
 	}
 
 	private String get(String fileName) {
-	    /*OutputStream out = null;
-	    try {
-		out = this.clientSocket.getOutputStream();
-	    } catch (IOException e1) {
-		e1.printStackTrace();
-		}*/
-	    
 	    File f = null;
 	    try{
 	    	f = new File(fileName);
@@ -175,8 +177,9 @@ public class ServerThread implements Runnable {
 	    	OutputStream out = null;
 	    	try {
 	    		out = this.clientSocket.getOutputStream();
-	    	} catch (IOException e1) {
-		    e1.printStackTrace();
+	    	} 
+	    	catch (IOException e1) {
+	    		e1.printStackTrace();
 	    	}
 	    	
 	    	//create an input stream for the file
@@ -200,7 +203,7 @@ public class ServerThread implements Runnable {
 		    return "Error reading file";
 	    }
 	    
-	    return "Download successful."; 
+	   return "Download successful."; 
 	}
     
 	//Notify client whether or not the file exists.
@@ -208,23 +211,19 @@ public class ServerThread implements Runnable {
 	//write to stream send some text
     	System.out.println("Client notified");
     	if(sendingFile == false){
-    		try {
-    			PrintWriter notify = new PrintWriter(clientSocket.getOutputStream());
-    			notify.println("Error\n");
-    			notify.flush();
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    		}
+			this.out.println("Error\n");
+			this.out.flush();
+		
     	}
     	else{
-    		PrintWriter notify = null;
-	    try {
-	    	notify = new PrintWriter(clientSocket.getOutputStream());
-	    } catch (IOException e) {
-	    	e.printStackTrace();
-	    }
-	    notify.println("Accept\n");
-	    notify.flush();
+	    		/*PrintWriter notify = null;
+		    try {
+		    	notify = new PrintWriter(clientSocket.getOutputStream());
+		    } catch (IOException e) {
+		    	e.printStackTrace();
+		    }*/
+		    this.out.println("Accept\n");
+		    this.out.flush();
     	}
     }
 	
