@@ -123,18 +123,18 @@ public class ClientThread extends Thread {
 	    
 	}//receive
 	
-    private boolean checkServerResponse(){
+    private boolean checkServerResponse() throws IOException{
 	BufferedReader 	in = new BufferedReader(
 						new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
 						//new InputStreamReader(fileDownloader)
 						);
-	StringBuffer response = new StringBuffer;
+	StringBuffer response = new StringBuffer();
 	String input = null;
 	while (((input = in.readLine()) != null) && !input.equals("")){
 	    response.append(input);
 	}
 	boolean acceptFile;
-	return acceptFile = (response.toString.equals("Accept")) ? true : false;  
+	return acceptFile = (response.toString().equals("Accept")) ? true : false;  
     }
 
 	//helper method for send()

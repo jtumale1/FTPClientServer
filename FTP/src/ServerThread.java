@@ -208,6 +208,7 @@ public class ServerThread implements Runnable {
 	//Notify client whether or not the file exists.
     private void notifyClient(boolean sendingFile){
 	//write to stream send some text
+    	System.out.println("Client notified");
     	if(sendingFile == false){
 	    try {
 		PrintWriter notify = new PrintWriter(clientSocket.getOutputStream());
