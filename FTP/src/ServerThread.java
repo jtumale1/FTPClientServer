@@ -158,40 +158,53 @@ public class ServerThread implements Runnable {
 			e1.printStackTrace();
 		}
 		
-		
 		File curDir = new File(".");
 		File[] filesList = curDir.listFiles();
-		
-	    for(File f : filesList){
-		    	
-			if (f.getName().toString().trim().equals(fileName.trim())){
-			    try{
-			    				    	
-			    				    	
-	    			//create an input stream for the file
-	    			FileInputStream fileInputStream = new FileInputStream(f);
-	    			//create a byte array
-	    			byte[] bytes = new byte[(int) f.length()];	    	
-	    	    	
-	    	    	int count;
-	    	    	//write the bytes to the output stream
-	    	    	while ((count = fileInputStream.read(bytes)) > 0){
-	    	    		out.write(bytes, 0, count);
-	    	    	}
-
-	    	    	fileInputStream.close();
-	    	    	out.flush();  
-				
+		for(File f : filesList){
+		    
+		    if (f.getName().toString().trim().equals(fileName.trim())){
+			try{
+			    if(f.isDirectory() == true){
+				this.notifyClient(false);
+				return "This is a directory, you can only move files."
 			    }
-			    catch(IOException e){
-			    	return "Error reading file";
+			    this.notifyClient(true);
+			    //create an input stream for the file
+			    FileInputStream fileInputStream = new FileInputStream(f);
+			    //create a byte array
+			    byte[] bytes = new byte[(int) f.length()];	    	
+			    
+			    int count;
+			    //write the bytes to the output stream
+			    while ((count = fileInputStream.read(bytes)) > 0){
+	    	    		out.write(bytes, 0, count);
 			    }
 			    
-			    return "Download successful."; 
+			    fileInputStream.close();
+			    out.flush();  
+			    
 			}
-	    }
-	    return "File does not exist";   
+			catch(IOException e){
+			    this.notifyClient(false);
+			    return "Error reading file";
+			}
+			
+			return "Download successful."; 
+		    }
+		}
+		this.notifyClient(false);
+		return "File does not exist";   
 	}
+
+    private void notifyClient(boolean sendingfile){
+	//write to stream send some text
+	if(sendingFile == false){
+
+	}
+	else{
+
+	}
+    }
 	
 	private String cd(String newPath){
 		//does not actually change the location.

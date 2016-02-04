@@ -81,7 +81,13 @@ public class ClientThread extends Thread {
   		    	
 	    	if (cmd.equals("get")){
 	    		//case 1, client issued a get file command and server is currently returning file. 
+		    
+		    //first check to make sure there was no error in getting file
+		    //check server's response. If the exist existed then we need to write
 
+		    //otherwise print error message
+
+		    //if no error then read file
 	    		InputStream in = this.socket.getInputStream();
 	    		
 	    		byte[] bytes = new byte[16*1024];
