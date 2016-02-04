@@ -94,7 +94,6 @@ public class ServerThread implements Runnable {
 		
 		if (tokens.length == 1){
 			switch(cmd){
-				//todo
 				case "ls":
 					return this.ls();
 				case "pwd":
@@ -124,7 +123,6 @@ public class ServerThread implements Runnable {
 		try {
 			in = this.clientSocket.getInputStream();
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		OutputStream newFile = null;
@@ -199,9 +197,7 @@ public class ServerThread implements Runnable {
 	}
 	
    	private String pwd(){
-		String currentDirectory = System.getProperty("user.dir");
-		return currentDirectory;
-				
+		return System.getProperty("user.dir");
 	}
 	
 	private String ls(){
@@ -215,32 +211,28 @@ public class ServerThread implements Runnable {
 	}
 	
 	private String mkdir(String dirName) {
-		String directory = "";
 		//Makes file object to check if it exists
 		File file = new File(this.currentWorkingDir, dirName);
 		if(!file.exists()){
 			file.mkdir();
-			directory = "Directory created!\n";
+			return "Directory created!\n";
 		}
-		else if(file.exists()){
-			directory =  "Directory not created. File already exists!\n";
-		}
-		return directory;
+		return "Directory not created, it already exists!\n";
+		
 	}
 	
 	private String delete(String filename){
-		String status = "";
 		//Makes file object to check if it exists
 		File file = new File(filename);
 		if(file.exists()){
 			file.delete();
-			status = "Directory Deleted!\n";
+			if (!file.exists()){
+				return "File Deleted!\n";
+			}
+			else{
+				return "There was an error deleting the file";
+			}
 		}
-		else if(!file.exists()){
-			status =  "Directory not deleted. File does not exist!\n";
-		}
-		return status;
-		
+		return "File not deleted. File does not exist!\n";	
 	}
-	
 }
