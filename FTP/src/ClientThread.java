@@ -32,7 +32,7 @@ public class ClientThread extends Thread {
 		try{
 		    this.in = socket.getInputStream();
 		    this.out = socket.getOutputStream();
-		    //   this.br = new BufferedReader(new InputStreamReader(System.in));
+		    this.br = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		}
 		catch(Exception e){
 		    e.printStackTrace();   
@@ -135,33 +135,16 @@ public class ClientThread extends Thread {
 	    
 	}//receive
 	
-    private boolean checkServerResponse(){
-	BufferedReader 	in = new BufferedReader(
+    private boolean checkServerResponse() throws IOException{
+	/*BufferedReader 	in = new BufferedReader(
 						new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
 						//new InputStreamReader(fileDownloader)
 						);
-<<<<<<< Updated upstream
-	StringBuffer response = new StringBuffer;
-	String input = null;
-	while (((input = in.readLine()) != null) && !input.equals("")){
-	    response.append(input);
-	}
-	boolean acceptFile;
-	return acceptFile = (response.toString.equals("Accept")) ? true : false;  
-=======
-	
+*/
 	StringBuffer response = new StringBuffer();
 	String input = null;
 	
-//	while (((input = in.readLine()) != null) && !input.equals("")){
-//	    response.append(input);
-//	}
-	
-//	if (((input = in.readLine()) != null) && !input.equals("")){
-//	    response.append(input);
-//	}
-	
-	input = in.readLine();
+	input = this.br.readLine();
 	response.append(input);
 
 	boolean acceptFile = (response.toString().equals("Accept")) ? true : false;  
@@ -233,15 +216,15 @@ public class ClientThread extends Thread {
 	//helper method for receive()
 	public void printResponse() throws IOException{
 
-		BufferedReader 	in = new BufferedReader(
+		/*BufferedReader 	in = new BufferedReader(
 				       new InputStreamReader(this.socket.getInputStream()) //bug here...error reading socket.
 			       //new InputStreamReader(fileDownloader)
 				       );
-
+*/
 		//Print the response
 		String input = null;
 	
-		while (((input = in.readLine()) != null) && !input.equals("")){
+		while (((input = this.br.readLine()) != null) && !input.equals("")){
 				System.out.println(input);
 		}
 	}	

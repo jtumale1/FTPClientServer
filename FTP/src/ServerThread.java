@@ -210,7 +210,7 @@ public class ServerThread implements Runnable {
     	if(sendingFile == false){
     		try {
     			PrintWriter notify = new PrintWriter(clientSocket.getOutputStream());
-    			notify.println("Error");
+    			notify.println("Error\n");
     			notify.flush();
     		} catch (IOException e) {
     			e.printStackTrace();
@@ -223,7 +223,7 @@ public class ServerThread implements Runnable {
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
-	    notify.println("Accept");
+	    notify.println("Accept\n");
 	    notify.flush();
     	}
     }
