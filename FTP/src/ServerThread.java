@@ -10,14 +10,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.FileSystemException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
-import java.util.Scanner;
-
-
 
 public class ServerThread implements Runnable {
 	
@@ -209,19 +201,13 @@ public class ServerThread implements Runnable {
 	//Notify client whether or not the file exists.
     private void notifyClient(boolean sendingFile){
 	//write to stream send some text
-    	System.out.println("Client notified");
+    	//System.out.println("Client notified");
     	if(sendingFile == false){
 			this.out.println("Error\n");
 			this.out.flush();
 		
     	}
     	else{
-	    		/*PrintWriter notify = null;
-		    try {
-		    	notify = new PrintWriter(clientSocket.getOutputStream());
-		    } catch (IOException e) {
-		    	e.printStackTrace();
-		    }*/
 		    this.out.println("Accept\n");
 		    this.out.flush();
     	}
