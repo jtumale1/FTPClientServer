@@ -29,6 +29,7 @@ public class Client {
 		//create socket
 		this.clientSocket = new Socket(this.hostName, this.connectPort);
 		
+		
 		//read commands from sys.in
 		String input = null;
 		while(true){

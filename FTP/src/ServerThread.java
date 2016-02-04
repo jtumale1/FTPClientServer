@@ -221,9 +221,10 @@ public class ServerThread implements Runnable {
 		
 	}
 	
-	private String delete(String filename){
+	private String delete(String fileName){
 		//Makes file object to check if it exists
-		File file = new File(filename);
+		//File file = new File(filename);
+		File file = new File(this.currentWorkingDir, fileName);
 		if(file.exists()){
 			file.delete();
 			if (!file.exists()){

@@ -34,6 +34,7 @@ public class ClientThread extends Thread {
 			this.receive();
 		}
 		catch(FileNotFoundException fnfe){
+			fnfe.printStackTrace();
 			System.out.println("File not found.");
 		}
 		catch(FileSystemException fse){
@@ -49,7 +50,6 @@ public class ClientThread extends Thread {
 		//sending a file to server
 		if(tokens[0].equals("put") && tokens.length == 2){
 			String fileName = tokens[1];
-	
 			readBytesAndOutputToStream(fileName);			
 		}
 		//sending string to server
@@ -67,25 +67,28 @@ public class ClientThread extends Thread {
 	    String[] tokens = this.cmd.split(" ");
 	    String cmd = tokens[0];
 	
-	    if (tokens.length >1){
+	    if (tokens.length > 1){
   		    	String fileName = tokens[1];
-	    	//case 1, client issued a get file command and server is currently returning file. 
-	    	//We need to receive this incoming byte stream as file
-  				FileOutputStream fileWriter = new FileOutputStream(fileName);
-  				InputStream fileDownloader = this.socket.getInputStream();
+	    	
   		    	
 	    	if (cmd.equals("get")){
-	    		
+	    		//case 1, client issued a get file command and server is currently returning file. 
+		    	//We need to receive this incoming byte stream as file
+	  				FileOutputStream fileWriter = new FileOutputStream(fileName);
+	  				InputStream fileDownloader = this.socket.getInputStream();
 	    		receiveByteStreamAndWriteToFile(fileName, fileWriter, fileDownloader);
 		    		
 	    	}//if
+	    	
 	    	//case 2 client issue another command, server is returning a string. Receive the string
 	    	else{
 	    		//Receive the server's response
 	    		printResponse();
 	    	}//else
 	    
-	    }else{ //token length < 1
+	    }
+	    
+	    else{ //token length < 1
     		//Receive the server's response
 	    	printResponse();
 	    }//else
