@@ -4,14 +4,18 @@ Authors: Montana Wong, Justin Tumale, Matthew Haneburger
 Date: February 5th, 2016
 Compilation Instructions: 
 Nike: Makefile included. 
--Run 'Make' in directory
--One window: 'java Server 60000'
--One window: 'java Client 59000'
+-Run 'make' in directory
+
+Run instructions
+-One window: 'java Server portnumber'
+-One window: 'java Client hostname portnumber'
 -Program Running
-Eclipse: Run Configurations
-Server - [port number]
-Client - [port number]
-New console, program running
+
+Clean instructions
+-run $make clean
+
+Note:
+- check documentation in source code for additional information
 
 This project was done in its entirety by Montana Wong, Justin Tumale, and Matthew Haneburger. We hereby
 state that we have not received unauthorized help of any form.
