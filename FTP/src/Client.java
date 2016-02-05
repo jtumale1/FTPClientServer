@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 
 public class Client {
 	
-	//private ExecutorService threadPool = Executors.newCachedThreadPool();
 	private Socket clientSocket = null;
 	private Scanner scanner = new Scanner(System.in);
 	private PrintStream output = null;
@@ -38,8 +37,7 @@ public class Client {
 		
 			ClientThread clientThread = new ClientThread(this.clientSocket, input);
 			clientThread.start();
-			//this.threadPool.execute(clientThread);
-			
+
 			try{
 				//this forces our client to be synchronous for now, program blocks until thread dies
 				clientThread.join();
