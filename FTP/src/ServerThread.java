@@ -1,3 +1,9 @@
+/**Filename: ServerThread.java
+ * @authors Wong, Tumale, Haneburger
+ * @description: Handles connections to the server. Individual thread will listen to client to tell it
+ * what commands to run and sends the output of said command. Contains parsing method to generate the 
+ * specific output given by the client/user.
+ * */
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +16,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 /**
  * 
  * 
@@ -115,6 +120,11 @@ public class ServerThread implements Runnable {
 		return "Command not supported.";
 	}
 
+	/**
+     * method of file transfer
+     * @param name of file to remote machine from local machine
+     * @return success or failure message
+     * */
 	private String put(String fileName) {
 	    InputStream in = null;
 		try {
@@ -143,6 +153,11 @@ public class ServerThread implements Runnable {
 		return fileName + " successfully copied to server";
 	}
 
+	/**
+	 * This method is intended to transfer a file from remote machine to local machine
+	 * @param name of the file to transfer
+	 * @return success or failure message of the file transfer
+	 * */
 	private String get(String fileName) {
 	    File f = null;
 	    try{
@@ -196,8 +211,11 @@ public class ServerThread implements Runnable {
 	   return "Download successful."; 
 	}
     
-	/**Notify client whether or not the file exists.*/
-    private void notifyClient(boolean sendingFile){
+/**Notify client whether or not the file exists.
+	 * @param boolean flag
+	 * @return "Accept" or "Error" based on result
+	 * */
+	 private void notifyClient(boolean sendingFile){
 	//write to stream send some text
     	//System.out.println("Client notified");
     	if(sendingFile == false){
@@ -210,9 +228,9 @@ public class ServerThread implements Runnable {
     }
 	
     /**
-     * 
-     * @param newPath
-     * @return
+     * Changes the current working directory to the directory specified
+     * @param path of the directory as only parameter
+     * @return path of the new directory
      */
 	private String cd(String newPath){
 		//does not actually change the location, just rebuild this.cwd.
@@ -228,16 +246,16 @@ public class ServerThread implements Runnable {
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * Prints the current working directory
+	 * @return the current working directory
 	 */
    	private String pwd(){
 		return System.getProperty("user.dir");
 	}
 	
    	/**
-   	 * 
-   	 * @return
+   	 * Returns a list of all files in the currently working directory on new lines
+   	 * @return list of files
    	 */
 	private String ls(){
 		StringBuffer output = new StringBuffer();
@@ -250,9 +268,9 @@ public class ServerThread implements Runnable {
 	}
 	
 	/**
-	 * 
-	 * @param dirName
-	 * @return
+	 * Makes a new directory in the current working directory
+	 * @param dirName, name of new directory
+	 * @return error message 'success' or 'failure'
 	 */
 	private String mkdir(String dirName) {
 		//Makes file object to check if it exists
@@ -265,9 +283,9 @@ public class ServerThread implements Runnable {
 		
 	}
 	/**
-	 * 
+	 * Deletes a specified file
 	 * @param fileName
-	 * @return
+	 * @return message indicating whether a file was deleted, not deleted, or error message
 	 */
 	private String delete(String fileName){
 		//Makes file object to check if it exists
