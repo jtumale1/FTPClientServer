@@ -1,3 +1,11 @@
+
+/**
+ * ClientThread.java
+ * @author Montana Wong
+ * @author Justin Tumale
+ * @author Matthew Haneburger
+ * @description Represents one connection
+ * */
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,12 +18,11 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.FileSystemException;
-import java.nio.file.Files;
 
 
 /**
- * Documentation goes here... 
- *
+ * Creates ClientThread inherited from Java.lang.Thread 
+ * Represents one connection
  *
  */
 public class ClientThread extends Thread {
@@ -26,8 +33,9 @@ public class ClientThread extends Thread {
     private BufferedReader br;
     
 	/**
-	 * Documentation goes here... 
-	 * 
+	 * Creates new ClientThread with param socket and cmd 
+	 * Sets socket and connection
+	 * Constructor
 	 * @param socket
 	 * @param cmd
 	 */
@@ -45,7 +53,8 @@ public class ClientThread extends Thread {
 	}
 	
 	/**
-	 * 
+	 * overridden method run to send and receive signals and catches exceptions with reading files and 
+	 * handling sockets
 	 */
 	@Override
 	public void run(){
@@ -67,7 +76,7 @@ public class ClientThread extends Thread {
 	}
 	
 	/**
-	 * 
+	 * Sends signals
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws FileSystemException
@@ -98,7 +107,7 @@ public class ClientThread extends Thread {
 	}
 	
 	/**
-	 * 
+	 * Receives signals and checks the command to tokenize them
 	 * @throws IOException
 	 */
 	private void receive() throws IOException{
@@ -129,8 +138,9 @@ public class ClientThread extends Thread {
 	}//receive
 	
 	/**
+	 * Checks the server response and throws IOException
 	 * 
-	 * @return
+	 * @return prompt to user that file is accepted or not accepted
 	 * @throws IOException
 	 */
     private boolean checkServerResponse() throws IOException{
@@ -141,9 +151,6 @@ public class ClientThread extends Thread {
 		response.append(input);
 	
 		return (response.toString().equals("Accept")) ? true : false;  
-		//System.out.println("Accepting file : " + acceptFile);
-		
-		//return acceptFile;
 
     }
 
@@ -187,6 +194,7 @@ public class ClientThread extends Thread {
 	
 	
 	/**
+	 * Helper method; Receives byte streams in order to read then write to particular file
 	 * 
 	 * @param fileName
 	 * @param fileWriter
@@ -213,7 +221,7 @@ public class ClientThread extends Thread {
 	}
 
 	/**
-	 * 
+	 * Prints response by user
 	 * @throws IOException
 	 */
 	public void printResponse() throws IOException{
