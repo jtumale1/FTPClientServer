@@ -74,7 +74,7 @@ public class Client {
 	
 	
 	public static void main(String[] args){
-		boolean DEVELOPMENT = true;
+		boolean DEVELOPMENT = false;
 		if(DEVELOPMENT){
 			Client client = new Client("localhost", 60000);
 			System.out.println("Running client!");
