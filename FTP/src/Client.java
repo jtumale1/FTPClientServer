@@ -1,11 +1,19 @@
+/**Filename: Client.java
+ *	@author Montana Wong
+ * 	@author Justin Tumale
+ * 	@author Matthew Haneburger
+ * 	@description connects client to server, and makes sure that the connection is syntactically correct. main
+ * 	class to spawn client threads to connect to the server. 
+ * */
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.*;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-
+/**
+ * description above
+ * */
 public class Client {
 	
 	private Socket clientSocket = null;
@@ -13,17 +21,27 @@ public class Client {
 	private PrintStream output = null;
 	private int connectPort;
 	private String hostName = null;
-	
+	/**
+	 * @params port number
+	 * */
 	public Client(int port){
 		this.connectPort = port;
 		this.hostName = "localhost";
 	}
+	/**
+	 * @params hostname, port number
+	 * */
 	public Client(String hostName, int port){
 		this.connectPort = port;
 		this.hostName = hostName;
 	}
-	
-	
+	/**
+	 * this method creates a socket, and listens to commands given by the user. Read in from scanner and
+	 * shows prompt. infinite until the user inputs "quit"
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 * */
 	public void run() throws UnknownHostException, IOException, InterruptedException{
 		//create socket
 		this.clientSocket = new Socket(this.hostName, this.connectPort);
