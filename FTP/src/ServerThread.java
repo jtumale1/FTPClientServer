@@ -1,5 +1,7 @@
-/**Filename: ServerThread.java
- * @authors Wong, Tumale, Haneburger
+/* ServerThread.java
+ * @author Montana Wong
+ * @author Justin Tumale
+ * @author Matthew Haneburger
  * @description: Handles connections to the server. Individual thread will listen to client to tell it
  * what commands to run and sends the output of said command. Contains parsing method to generate the 
  * specific output given by the client/user.
