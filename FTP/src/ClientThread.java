@@ -13,25 +13,30 @@ import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 
 
-
+/**
+ * Documentation goes here... 
+ *
+ *
+ */
 public class ClientThread extends Thread {
 	
 	private Socket socket;
 	private String cmd;
-	private File currentWorkingDir = null;
     private InputStream in;
-    private OutputStream out;
     private BufferedReader br;
     
-	
+	/**
+	 * Documentation goes here... 
+	 * 
+	 * @param socket
+	 * @param cmd
+	 */
 	public ClientThread(Socket socket, String cmd){
 		super();
 		this.socket = socket;
 		this.cmd = cmd;
-		this.currentWorkingDir =  new File(System.getProperty("user.dir"));
 		try{
 		    this.in = socket.getInputStream();
-		    this.out = socket.getOutputStream();
 		    this.br = new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
 		}
 		catch(Exception e){
@@ -39,6 +44,9 @@ public class ClientThread extends Thread {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	@Override
 	public void run(){
 		try {
@@ -58,6 +66,12 @@ public class ClientThread extends Thread {
 
 	}
 	
+	/**
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws FileSystemException
+	 */
 	private void send() throws FileNotFoundException, IOException, FileSystemException{
 	    String[] tokens = this.cmd.split(" ");		
 		//sending a file to server
@@ -83,22 +97,23 @@ public class ClientThread extends Thread {
 		}
 	}
 	
+	/**
+	 * 
+	 * @throws IOException
+	 */
 	private void receive() throws IOException{
 	    String[] tokens = this.cmd.split(" ");
 	    String cmd = tokens[0];
-	
-	    if (tokens.length > 1){
-  		    	String fileName = tokens[1];
-	    	
-  		    	
-	    	if (cmd.equals("get")){
-	    		//case 1, client issued a get file command and server is currently returning file. 
-		    
+	     	
+    	if (tokens.length > 1 && cmd.equals("get")){
+    		 String fileName = tokens[1];
+    		//case 1, client issued a get file command and server is currently returning file. 
+	    
 		    //first check to make sure there was no error in getting file
-		    //check server's response. If the exist existed then we need to write
+		    //check server's response. 
 		    boolean acceptFile = this.checkServerResponse();
 		    if(acceptFile){
-			    //if no error then read file  
+			    //If the file exists then we need to write to file.
 			    byte[] bytes = new byte[16*1024];
 			    
 			    this.in.read(bytes);
@@ -107,31 +122,17 @@ public class ClientThread extends Thread {
 			    FileOutputStream fos = new FileOutputStream(fileName);
 			    fos.write(bytes);
 			    fos.close();
-			    
-			    printResponse();
-			    
 		    }
-		    //otherwise print error message
-		    else{
-		    	printResponse();
-		    }
-		}//if
-	    	
-	    	//case 2 client issue another command, server is returning a string. Receive the string
-	    	else{
-	    		//Receive the server's response
-	    		printResponse();
-	    	}//else
-	    
-	    }
-	    
-	    else{ //token length < 1
-    		//Receive the server's response
-	    	printResponse();
-	    }//else
-	    
+    	}
+    	//print response is called no matter what
+	    printResponse();
 	}//receive
 	
+	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
     private boolean checkServerResponse() throws IOException{
 		StringBuffer response = new StringBuffer();
 		String input = null;
@@ -139,14 +140,20 @@ public class ClientThread extends Thread {
 		input = this.br.readLine();
 		response.append(input);
 	
-		boolean acceptFile = (response.toString().equals("Accept")) ? true : false;  
-		System.out.println("Accepting file : " + acceptFile);
+		return (response.toString().equals("Accept")) ? true : false;  
+		//System.out.println("Accepting file : " + acceptFile);
 		
-		return acceptFile;
+		//return acceptFile;
 
     }
 
-	//helper method for send()
+	/**
+	 * Helper method for send. Reads a file to bytes then outputs it to the output stream
+	 * @param fileName String the name of the file to output to the stream
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws FileSystemException
+	 */
 	private void readBytesAndOutputToStream(String fileName) 
 			throws FileNotFoundException, IOException, FileSystemException{
 		
@@ -172,21 +179,20 @@ public class ClientThread extends Thread {
     	while ((count = fileInputStream.read(bytes)) > 0){
     		out.write(bytes, 0, count);
     	}
-
-    	//print the file content
-//    	for (int i = 0; i < bytes.length; i++){	
-//    		System.out.print((char) bytes[i]);
-//    	}
     	
     	//close the file input stream
     	fileInputStream.close();
-    	//out.close();
-		
 	}
 	
 	
 	
-	//helper method for receive()
+	/**
+	 * 
+	 * @param fileName
+	 * @param fileWriter
+	 * @param fileDownloader
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unused")
 	private void receiveByteStreamAndWriteToFile(String fileName, FileOutputStream fileWriter, 
 			InputStream fileDownloader) throws IOException{
@@ -206,7 +212,10 @@ public class ClientThread extends Thread {
 		
 	}
 
-	//helper method for receive()
+	/**
+	 * 
+	 * @throws IOException
+	 */
 	public void printResponse() throws IOException{
 		//Print the response
 		String input = null;

@@ -11,20 +11,20 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * 
+ * 
+ *
+ */
 public class ServerThread implements Runnable {
 	
-	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private File currentWorkingDir;
-	private volatile Boolean active;
 	private PrintWriter out;
-	private InputStream in;
 	private BufferedReader br;
 	
-	public ServerThread(Socket clientSocket, ServerSocket serverSocket, Boolean active){
-		this.serverSocket = serverSocket;
+	public ServerThread(Socket clientSocket, ServerSocket serverSocket){
 		this.clientSocket = clientSocket;
-		this.active = active;
 		this.currentWorkingDir = new File(System.getProperty("user.dir"));
 		//out is the message buffer to return to the client
 		try {
@@ -32,8 +32,7 @@ public class ServerThread implements Runnable {
 			//br is the incoming message buffer from the client to be read by the server
 			this.br = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Error connecting to socket.");
 		}
 		
 		
@@ -76,8 +75,7 @@ public class ServerThread implements Runnable {
 				//close client conn.
 				this.clientSocket.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Error closing client socket");
 			}
 		}
 		
@@ -198,23 +196,26 @@ public class ServerThread implements Runnable {
 	   return "Download successful."; 
 	}
     
-	//Notify client whether or not the file exists.
+	/**Notify client whether or not the file exists.*/
     private void notifyClient(boolean sendingFile){
 	//write to stream send some text
     	//System.out.println("Client notified");
     	if(sendingFile == false){
-			this.out.println("Error\n");
-			this.out.flush();
-		
+			this.out.println("Error");
     	}
     	else{
-		    this.out.println("Accept\n");
-		    this.out.flush();
+		    this.out.println("Accept");
     	}
+    	   this.out.flush();
     }
 	
+    /**
+     * 
+     * @param newPath
+     * @return
+     */
 	private String cd(String newPath){
-		//does not actually change the location.
+		//does not actually change the location, just rebuild this.cwd.
 		File dir = new File(this.currentWorkingDir, newPath);
 		if(dir.isDirectory() == true){
 			System.setProperty("user.dir", dir.getAbsolutePath());
@@ -223,13 +224,21 @@ public class ServerThread implements Runnable {
 		else{
 			return newPath + " is not a directory.";
 		}
-		return "Changed directory"; //dir.getAbsolutePath();
+		return "Changed directory";
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
    	private String pwd(){
 		return System.getProperty("user.dir");
 	}
 	
+   	/**
+   	 * 
+   	 * @return
+   	 */
 	private String ls(){
 		StringBuffer output = new StringBuffer();
 		//File currentDirectory = new File(System.getProperty("user.dir"));
@@ -237,9 +246,14 @@ public class ServerThread implements Runnable {
 		for(String file: childs){
 			output.append(file + "\n");
 		}
-		return output.toString();
+		return output.toString().substring(0, output.length());
 	}
 	
+	/**
+	 * 
+	 * @param dirName
+	 * @return
+	 */
 	private String mkdir(String dirName) {
 		//Makes file object to check if it exists
 		File file = new File(this.currentWorkingDir, dirName);
@@ -250,10 +264,13 @@ public class ServerThread implements Runnable {
 		return "Directory not created, it already exists!";
 		
 	}
-	
+	/**
+	 * 
+	 * @param fileName
+	 * @return
+	 */
 	private String delete(String fileName){
 		//Makes file object to check if it exists
-		//File file = new File(filename);
 		File file = new File(this.currentWorkingDir, fileName);
 		if(file.exists()){
 			file.delete();

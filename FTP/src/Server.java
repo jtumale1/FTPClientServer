@@ -11,8 +11,6 @@ public class Server {
 	private int port;
 	private String address = "localhost";
 	private ServerSocket serverSocket = null;
-	private volatile Boolean active = true;
-	
 	
 	public Server(String address, int port){
 		this.address = address;
@@ -35,28 +33,26 @@ public class Server {
 			
 			do{
 				Socket clientSocket = this.serverSocket.accept();
-				ServerThread serverThread = new ServerThread(clientSocket, this.serverSocket, this.active);
+				ServerThread serverThread = new ServerThread(clientSocket, this.serverSocket);
 				this.threadPool.execute(serverThread);
-			}while(active);
+			}while(true);
 					
 		} 
 		
 		catch (IOException e) {
- 			// TODO Auto-generated catch block
- 			e.printStackTrace();
+ 			System.out.println("Error reading socket");
 		}
 		catch(IllegalArgumentException iae){
 			iae.printStackTrace();
 		}
 		finally{
-			// have check here that other threads arent running
+			// have check here that other threads aren't running
 			if (this.serverSocket != null)
 				try {
 					this.serverSocket.close();
 				} 
 				catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Error closing server socket.");
 				}
 		}
 		
@@ -65,7 +61,7 @@ public class Server {
 	
 	public static void main(String[] args){
 		
-		boolean DEVELOPMENT = true;
+		boolean DEVELOPMENT = false;
 		if (DEVELOPMENT){
 			Server myFtpServer = new Server("localhost", 60000);
 			myFtpServer.run();
