@@ -141,7 +141,8 @@ public class ServerThread implements Runnable {
 			System.out.println("");
 						
 			//Output into a file
-	    	FileOutputStream fos = new FileOutputStream(fileName);
+			File f = new File(this.currentWorkingDir, fileName);
+	    	FileOutputStream fos = new FileOutputStream(f);
 	    	fos.write(bytes);
 	    	fos.close();
 			
@@ -161,7 +162,7 @@ public class ServerThread implements Runnable {
 	private String get(String fileName) {
 	    File f = null;
 	    try{
-	    	f = new File(fileName);
+	    	f = new File(this.currentWorkingDir, fileName);
 	    	if (!f.exists()){
 	    		throw new FileNotFoundException();
 	    	}
